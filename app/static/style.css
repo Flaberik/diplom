@@ -1,0 +1,35 @@
+.rbb{
+  display: block;
+  height: auto;
+  width: 20%;
+  background: #dedede;
+  margin: auto;
+  border-radius: 5px 5px 0px 0px;
+}
+
+.bb{
+  margin-left: 5%;
+}
+
+.tfield{
+  border-radius: 5px;
+  border-color: #b0acac;
+  background-color: #b0acac;
+}
+
+.btn{
+  display: block;
+  height: auto;
+  width: 20%;
+
+  background: #d4d4d4;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 0px 0px 5px 5px;
+}
+
+.form_auth{
+  width: 16%;
+  margin: 0 auto;
+  background-color: #333c;
+}

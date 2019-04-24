@@ -1,0 +1,34 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign Up</h1>
+
+<form action="" method="post" name="signup">
+    <div class="rbb">
+    {{form.hidden_tag()}}
+
+      <p>
+          <div class="bb">
+            Логин:<br>
+            {{form.login(size=30, class_="tfield")}}<br>
+          </div>
+      </p>
+      <div class = "bb">
+        <p>
+            Пароль: <br>
+            {{form.pass_one(size=30, class_="tfield")}}
+        </p>
+      </div>
+      <div class = "bb">
+
+            Пароль: <br>
+            {{form.pass_two(size=30, class_="tfield")}}
+
+      </div>
+    </div>
+    <div class="btn">
+      <input type="submit" value="Sign Up">
+    </div>
+</form>
+{% endblock %}

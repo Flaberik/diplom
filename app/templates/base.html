@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}" type="text/css">
+  {% if title %}
+     <title>{{title}} - microblog</title>
+     {% else %}
+     <title>microblog</title>
+     {% endif %}
+  </head>
+   <body>
+     <div>Microblog: <a href="/index">Home</a></div>
+     <hr>
+     {% with messages = get_flashed_messages() %}
+     {% if messages %}
+     <ul>
+     {% for message in messages %}
+         <li>{{ message }} </li>
+     {% endfor %}
+     </ul>
+     {% endif %}
+     {% endwith %}
+     {% block content %}{% endblock %}
+   </body>
+</html>
