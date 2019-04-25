@@ -1,31 +1,24 @@
-.rbb{
-  display: block;
-  height: auto;
-  width: 20%;
-  background: #dedede;
-  margin: auto;
-  border-radius: 5px 5px 0px 0px;
+body{
+    background-image: url(bg.png);
+    max-width: 1024px;
+    margin: 0 auto;
 }
 
-.bb{
-  margin-left: 5%;
+div{
+    border: 1px Solid black;
+    padding: 5px 15px;
 }
 
-.tfield{
-  border-radius: 5px;
-  border-color: #b0acac;
-  background-color: #b0acac;
+.add_teacher{
+    margin: 0 auto;
+    width: 350px;
+    height: 350px;
 }
 
-.btn{
-  display: block;
-  height: auto;
-  width: 20%;
-
-  background: #d4d4d4;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 0px 0px 5px 5px;
+.edit_teacher{
+    margin: 0 auto;
+    width: 350px;
+    height: 350px;
 }
 
 .text_cont{

@@ -1,36 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class = "add_teacher">
+<style type="text/css">
+.tabs { width: 100%; padding: 0px; margin: 0 auto; }
+.tabs>input { display:none; }
+.tabs>div {
+    display: none;
+    padding: 12px;
+    border: 1px solid #C0C0C0;
 
+}
+.tabs>label {
+    display: inline-block;
+    padding: 7px;
+    margin: 0 -5px -1px 0;
+    text-align: center;
+    color: #666666;
+    border: 1px solid #C0C0C0;
+    background: #E0E0E0;
+    cursor: pointer;
+}
+.tabs>input:checked + label {
+    color: #000000;
+    border: 1px solid #C0C0C0;
+    border-bottom: 1px solid #FFFFFF;
+    background: #FFFFFF;
+}
+#tab_1:checked ~ #add_teacher,
+#tab_2:checked ~ #edit_teacher,
+#tab_3:checked ~ #delete_teacher { display: block; }
 
-</div>
+</style>
 
-
-<div class = "edit_teacher">
-
-
-</div>
-
-<div class = "delete_teacher">
-
-
-</div>
-
-<form action="" method="post" name = "teacher">
+<form action="" method="post" name="teacher">
     {{ form.hidden_tag() }}
-    <div>
-        <p>Выберите вариант</p>
-        <select name="form_select" size="5" multiple="multiple">
-            <option class="plit1" value="Значение 1">Первый вариант</option>
-            <option class="plit2" value="Значение 2">Второй вариант</option>
-            <option value="Значение 3">Третий вариант</option>
-            <option selected="selected" value="Значение 4">Четвертый вариант</option>
-            <option value="Значение 5">Пятый вариант</option>
-            <option value="Значение 6">Шестой вариант</option>
-        </select>
+    <div class="tabs">
+        <input type="radio" name="inset" value="add_teacher" id="tab_1" checked>
+        <label for="tab_1">Добавить преподавателя</label>
+
+        <input type="radio" name="inset" value="edit_teacher" id="tab_2">
+        <label for="tab_2">Редактировать преподавателя</label>
+
+        <input type="radio" name="inset" value="delete_teacher" id="tab_3">
+        <label for="tab_3">Удалить преподавателя</label>
+
+        <div class="add_teacher" id="add_teacher">
+            <input type="submit" value="Отправить">
+        </div>
+
+
+        <div class="edit_teacher" id="edit_teacher">
+            <input type="submit" value="Отправить">
+        </div>
+
+        <div class="delete_teacher" id="delete_teacher">
+            <input type="submit" value="Отправить">
+        </div>
     </div>
-    <input type="submit" value="Отправить">
 </form>
+
+
+<div>
+    <p>Выберите вариант</p>
+    <select name="form_select" size="5" multiple="multiple">
+        <option class="plit1" value="select2">Первый вариант</option>
+        <option class="plit2" value="Значение 2">Второй вариант</option>
+        <option value="Значение 3">Третий вариант</option>
+        <option value="Значение 4">Четвертый вариант</option>
+        <option value="Значение 5">Пятый вариант</option>
+        <option value="Значение 6">Шестой вариант</option>
+    </select>
+</div>
+<input type="submit" value="Отправить">
+
 
 {% endblock %}

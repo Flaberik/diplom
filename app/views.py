@@ -29,9 +29,11 @@ def login():
 @app.route('/teacher', methods=['GET', 'POST'])
 def teacher():
     form = TeacherForm()
+    inset = ''
     if form.validate_on_submit():
-        t = request.form['form_select']
-        flash(t)
+        flash(request)
+        inset = request.form['inset']
+        return render_template('teacher.html', title='Teachers', form=form)
     return render_template('teacher.html', title='Teachers', form=form)
 
 
