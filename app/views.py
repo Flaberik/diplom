@@ -1,14 +1,10 @@
-from flask import render_template, flash, redirect
-
-import hashlib
-from app.forms import *
-
 from flask import render_template, flash, redirect, session, url_for, request, g
-from flask_login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from app.models import User, ROLE_USER, ROLE_ADMIN
+from flask_login import login_user, current_user, login_required
 
 from app import app
+from app import db, oid
+from app.forms import *
+from app.models import User, ROLE_USER
 
 
 # ---------------------------------------------------------------------#
@@ -73,7 +69,6 @@ def signin():
 # ---------------------------------------------------------------------#
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
     user = g.user
 

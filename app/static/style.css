@@ -28,8 +28,16 @@
   border-radius: 0px 0px 5px 5px;
 }
 
+.text_cont{
+
+    margin: 0 auto;
+}
+
 .form_auth{
-  width: 16%;
-  margin: 0 auto;
-  background-color: #333c;
+    margin: 0 auto;
+    width: 255px;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #e0dddd;
+    border: 1px solid black;
 }

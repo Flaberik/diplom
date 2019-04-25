@@ -2,61 +2,34 @@
 {% extends "base.html" %}
 {% block content %}
 
-<script type="text/javascript">
-function set_openid(openid, pr)
-{
-    u = openid.search('<username>')
-    if (u != -1) {
-        // openid requires username
-        user = prompt('Enter your ' + pr + ' username:')
-        openid = openid.substr(0, u) + user
-    }
-    form = document.forms['login'];
-    form.elements['username'].value = openid
+<style type="text/css">
+.test{
+    margin: 0 auto;
+    width: 50%;
 }
-</script>
+</style>
 
-
-
-<div class="form_auth">
-  <h1>Sign In</h1>
-  <form method="post" action="/login/">
-      <table>
-          <tr>
-              <td><label for="loginField">Логин</label></td>
-              <td><input id="loginField" type="text" name="login"></td>
-          </tr>
-          <tr>
-              <td><label for="passwordField">Пароль</label></td>
-              <td><input id="passwordField" type="password" name="password"></td>
-          </tr>
-          <tr>
-              <td colspan="2" style="text-align: center"><input type="submit" value="Войти"></td>
-          </tr>
-      </table>
-  </form>
+<div style="margin: 0 auto; width: 255px;">
+    <div class = "form_auth">
+        <div class="test">
+            <h1>Вход</h1>
+        </div>
+        <form method="post">
+            <table>
+                <tr>
+                    <td><label for="loginField">Логин</label></td>
+                    <td><input id="loginField" type="text" name="login"></td>
+                </tr>
+                <tr>
+                    <td><label for="passwordField">Пароль</label></td>
+                    <td><input id="passwordField" type="password" name="password"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center"><input type="submit" value="Войти"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
 
-
-<form action="" method="post" name="login">
-    {{form.hidden_tag()}}
-      <p>
-        Please enter your OpenID:<br>
-        {{form.username(size=80)}}<br>
-      </p>
-
-    <p>
-      Youre pass: <br>
-      {% for error in form.errors.openid %}
-        <span style="color: red;">[{{error}}]</span>
-      {% endfor %}<br>
-
-      |{% for pr in providers %}
-      <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');">{{pr.name}}</a> |
-      {% endfor %}
-
-    </p>
-    <p>{{form.remember_me}} Remember Me</p>
-    <p><input type="submit" value="Sign In"></p>
-</form>
 {% endblock %}
