@@ -1,10 +1,12 @@
+import hashlib
+
 from flask import render_template, flash, redirect, session, url_for, request, g
-from flask_login import login_user, current_user, login_required
+from flask_login import login_user, current_user
 
 from app import app
 from app import db, oid
 from app.forms import *
-from app.models import User, ROLE_USER
+from app.models import User
 
 
 # ---------------------------------------------------------------------#
@@ -14,16 +16,23 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(nickname=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
+        user = User.query.filter_by(login=form.login.data).first()
+
+        if user is None:
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form, providers=app.config['OPENID_PROVIDERS'])
+    return render_template('login.html', title='Sign In', form=form)
+
+
+# ---------------------------------------------------------------------#
+@app.route('/teacher', methods=['GET', 'POST'])
+def teacher():
+    form = TeacherForm()
+    if form.validate_on_submit():
+        t = request.form['form_select']
+        flash(t)
+    return render_template('teacher.html', title='Teachers', form=form)
 
 
 # ---------------------------------------------------------------------#
@@ -37,7 +46,7 @@ def after_login(resp):
         nickname = resp.nickname
         if nickname is None or nickname == "":
             nickname = resp.email.split('@')[0]
-        user = User(nickname=nickname, email=resp.email, role=ROLE_USER)
+        user = User(nickname=nickname, email=resp.email)
         db.session.add(user)
         db.session.commit()
     remember_me = False
@@ -84,3 +93,7 @@ def index():
     ]
 
     return render_template("index.html", title="home", posts=posts, user=user)
+
+
+def md5(text):
+    return hashlib.md5(str(text).encode('UTF-8')).hexdigest()

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class = "add_teacher">
+
+
+</div>
+
+
+<div class = "edit_teacher">
+
+
+</div>
+
+<div class = "delete_teacher">
+
+
+</div>
+
+<form action="" method="post" name = "teacher">
+    {{ form.hidden_tag() }}
+    <div>
+        <p>Выберите вариант</p>
+        <select name="form_select" size="5" multiple="multiple">
+            <option class="plit1" value="Значение 1">Первый вариант</option>
+            <option class="plit2" value="Значение 2">Второй вариант</option>
+            <option value="Значение 3">Третий вариант</option>
+            <option selected="selected" value="Значение 4">Четвертый вариант</option>
+            <option value="Значение 5">Пятый вариант</option>
+            <option value="Значение 6">Шестой вариант</option>
+        </select>
+    </div>
+    <input type="submit" value="Отправить">
+</form>
+
+{% endblock %}

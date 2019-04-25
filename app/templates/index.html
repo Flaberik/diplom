@@ -1,25 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 
-  <meta charset="utf-8">
-  {% if title %}
-  <title>{{title}} - microblog</title>
-  {% else %}
-  <title>Welcome to microblog</title>
-  {% endif %}
+    <meta charset="utf-8">
+    {% if title %}
+    <title>{{title}} - microblog</title>
+    {% else %}
+    <title>Welcome to microblog</title>
+    {% endif %}
 </head>
 <body>
 
-  {% extends "base.html" %}
-  {% block content %}
-  <h1>Hi, {{user.nickname}}!</h1>
-  {% for post in posts %}
-  <div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
-  {% endfor %}
-  {% endblock %}
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    <p>Выберите вариант</p>
+    <select name="form_select" size="5" multiple="multiple">
+        <option class="plit1" value="Значение 1">Первый вариант</option>
+        <option class="plit2" value="Значение 2">Второй вариант</option>
+        <option value="Значение 3">Третий вариант</option>
+        <option selected="selected" value="Значение 4">Четвертый вариант</option>
+        <option value="Значение 5">Пятый вариант</option>
+        <option value="Значение 6">Шестой вариант</option>
+    </select>
+</div>
+
+<form action="">
+
+</form>
+
+<div>
+    <h1>Hi, {{user.nickname}}!</h1>
+    {% for post in posts %}
+    <div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
+    {% endfor %}
+    {% endblock %}
+</div>
+
 </body>
 </html>

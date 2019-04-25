@@ -2,34 +2,34 @@
 {% extends "base.html" %}
 {% block content %}
 
-<style type="text/css">
-.test{
-    margin: 0 auto;
-    width: 50%;
-}
-</style>
-
-<div style="margin: 0 auto; width: 255px;">
-    <div class = "form_auth">
-        <div class="test">
+<div style="margin: 0 auto; width: 270px;">
+    <div class="form_auth">
+        <div class="text_cont">
             <h1>Вход</h1>
         </div>
-        <form method="post">
+        <form action="" method="post" name="login">
+            {{ form.hidden_tag() }}
             <table>
                 <tr>
                     <td><label for="loginField">Логин</label></td>
-                    <td><input id="loginField" type="text" name="login"></td>
+                    <td id="loginField">{{form.login()}}</td>
                 </tr>
                 <tr>
                     <td><label for="passwordField">Пароль</label></td>
-                    <td><input id="passwordField" type="password" name="password"></td>
+                    <td id="passwordField" d>{{form.password()}}</td>
+                </tr>
+                <tr>
+                    <td>Запомнить</td>
+                    <td >{{form.remember_me()}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center"><input type="submit" value="Войти"></td>
                 </tr>
+
             </table>
         </form>
     </div>
 </div>
+
 
 {% endblock %}
