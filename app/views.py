@@ -6,7 +6,7 @@ from flask_login import login_user, current_user
 from app import app
 from app import db, oid
 from app.forms import *
-from app.models import User
+from app.models import *
 
 
 # ---------------------------------------------------------------------#
@@ -31,10 +31,14 @@ def teacher():
     form = TeacherForm()
     inset = ''
     if form.validate_on_submit():
-        flash(request)
         inset = request.form['inset']
-        return render_template('teacher.html', title='Teachers', form=form)
-    return render_template('teacher.html', title='Teachers', form=form)
+        if inset == 'add_teacher':
+            teacher = Teachers(teacher_name = request.form['full_name'])
+            db.session.add(teacher)
+            db.session.commit()
+            db.session.close()
+        return render_template('teacher.html', title='Teachers', form=form, inset = str(inset))
+    return render_template('teacher.html', title='Teachers', form=form, inset = '')
 
 
 # ---------------------------------------------------------------------#

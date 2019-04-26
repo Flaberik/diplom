@@ -11,9 +11,14 @@ div{
 
 .add_teacher{
     margin: 0 auto;
-    width: 350px;
-    height: 350px;
 }
+
+.delete_teacher{
+  margin: 0 auto;
+  width: 350px;
+  height: 350px;
+}
+
 
 .edit_teacher{
     margin: 0 auto;
@@ -61,4 +66,3 @@ div{
     margin-bottom: 10px;
     box-shadow: 0 0 10px rgba(3, 3, 17, 40);
 }
-
