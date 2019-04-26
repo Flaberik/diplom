@@ -35,7 +35,7 @@
     <form action="" method="post" name="teacher">
       {{ form.hidden_tag() }}
       <div class="tabs">
-          {{inset}}
+
           <input type="radio" name="inset" value="add_teacher" id="tab_1">
           <label for="tab_1">Добавить</label>
           <input type="radio" name="inset" value="edit_teacher" id="tab_2">
@@ -60,13 +60,15 @@
 
           <div class="edit_teacher" id="edit_teacher">
             <p>
-              <select>
-              	<option>Электроник</option>
-              	<option>Сыроежкин</option>
-              	<option>Чижиков</option>
-              	<option>Кукушкина</option>
+              <select name = "teacher_select">
+                {% if teachers %}
+                  {% for teacher in  teachers %}
+                  	<option>{{teacher.teacher_name}}</option>
+                  {% endfor %}
+                {% endif %}
               </select>
             </p>
+              <input type="text" name="full_name2" value="" placeholder="Новое ФИО">
               <input type="submit" value="Отправить">
           </div>
 

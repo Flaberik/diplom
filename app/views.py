@@ -3,6 +3,8 @@ import hashlib
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, current_user
 
+import sqlalchemy
+
 from app import app
 from app import db, oid
 from app.forms import *
@@ -29,16 +31,28 @@ def login():
 @app.route('/teacher', methods=['GET', 'POST'])
 def teacher():
     form = TeacherForm()
+    teachers = Teachers.query.all()
     inset = ''
     if form.validate_on_submit():
         inset = request.form['inset']
         if inset == 'add_teacher':
-            teacher = Teachers(teacher_name = request.form['full_name'])
-            db.session.add(teacher)
+            try:
+                teacher = Teachers(teacher_name = request.form['full_name'])
+                db.session.add(teacher)
+                db.session.commit()
+                db.session.close()
+            except:
+                db.session.rollback()
+                pass
+
+        elif inset == 'edit_teacher':
+            teacher = Teachers.query.filter_by(teacher_name = request.form['teacher_select'])
+            teacher.teacher_name = request.form['full_name2']
             db.session.commit()
             db.session.close()
-        return render_template('teacher.html', title='Teachers', form=form, inset = str(inset))
-    return render_template('teacher.html', title='Teachers', form=form, inset = '')
+            return render_template('teacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
+
+    return render_template('teacher.html', title='Teachers', form=form, inset = '', teachers = teachers)
 
 
 # ---------------------------------------------------------------------#
