@@ -40,7 +40,6 @@ def teacher():
                 teacher = Teachers(teacher_name = request.form['full_name'])
                 db.session.add(teacher)
                 db.session.commit()
-                db.session.close()
             except:
                 db.session.rollback()
                 pass
@@ -49,7 +48,7 @@ def teacher():
             teacher = Teachers.query.filter_by(teacher_name = request.form['teacher_select'])
             teacher.teacher_name = request.form['full_name2']
             db.session.commit()
-            db.session.close()
+
             return render_template('teacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
 
     return render_template('teacher.html', title='Teachers', form=form, inset = '', teachers = teachers)
