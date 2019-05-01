@@ -4,6 +4,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, current_user
 
 import sqlalchemy
+from sqlalchemy import inspect
 
 from app import app
 from app import db, oid
@@ -42,14 +43,22 @@ def teacher():
                 db.session.commit()
             except:
                 db.session.rollback()
-                pass
 
         elif inset == 'edit_teacher':
-            teacher = Teachers.query.filter_by(teacher_name = request.form['teacher_select'])
-            teacher.teacher_name = request.form['full_name2']
-            db.session.commit()
-
+            try:
+                t_name = request.form['full_name2']
+                if len(t_name) > 1:
+                    db.session.query(Teachers).filter_by(teacher_name=request.form['teacher_select']).update({'teacher_name': t_name})
+                    db.session.commit()
+            except:
+                db.session.rollback()
             return render_template('teacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
+        elif inset == 'delete_teacher':
+            try:
+                Teachers.query().filter_by(teacher_name = request.form['teacher_select']).delete()
+                db.session.commit()
+            except:
+                db.session.rollback()
 
     return render_template('teacher.html', title='Teachers', form=form, inset = '', teachers = teachers)
 

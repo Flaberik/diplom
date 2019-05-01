@@ -29,54 +29,64 @@
   #tab_1:checked ~ #add_teacher,
   #tab_2:checked ~ #edit_teacher,
   #tab_3:checked ~ #delete_teacher { display: block;}
+
 </style>
 
 <center>
     <form action="" method="post" name="teacher">
-      {{ form.hidden_tag() }}
-      <div class="tabs">
+        {{ form.hidden_tag() }}
+        <div class="tabs">
 
-          <input type="radio" name="inset" value="add_teacher" id="tab_1">
-          <label for="tab_1">Добавить</label>
-          <input type="radio" name="inset" value="edit_teacher" id="tab_2">
-          <label for="tab_2">Редактировать</label>
-          <input type="radio" name="inset" value="delete_teacher" id="tab_3">
-          <label for="tab_3">Удалить</label>
+            <input type="radio" name="inset" value="add_teacher" id="tab_1">
+            <label for="tab_1">Добавить</label>
+            <input type="radio" name="inset" value="edit_teacher" id="tab_2">
+            <label for="tab_2">Редактировать</label>
+            <input type="radio" name="inset" value="delete_teacher" id="tab_3">
+            <label for="tab_3">Удалить</label>
 
-          {% if inset == 'add_teacher'|string() %}
-          <input type="radio" name="inset" value="add_teacher" id="tab_1" checked>
-          {% elif inset == 'edit_teacher'|string() %}
-          <input type="radio" name="inset" value="edit_teacher" id="tab_2" checked>
-          {% elif inset == 'delete_teacher'|string() %}
-          <input type="radio" name="inset" value="delete_teacher" id="tab_3" checked>
-          {% endif %}
+            {% if inset == 'add_teacher'|string() %}
+            <input type="radio" name="inset" value="add_teacher" id="tab_1" checked>
+            {% elif inset == 'edit_teacher'|string() %}
+            <input type="radio" name="inset" value="edit_teacher" id="tab_2" checked>
+            {% elif inset == 'delete_teacher'|string() %}
+            <input type="radio" name="inset" value="delete_teacher" id="tab_3" checked>
+            {% endif %}
 
 
-          <div class="add_teacher" id="add_teacher">
-              <label for="full_name">Ф.И.О.</label>
-              <input type="text" name="full_name" value="" placeholder="ФИО Преподавателя">
-              <input type="submit" value="Добавить">
-          </div>
+            <div class="add_teacher" id="add_teacher">
+                <label for="full_name">Ф.И.О.</label>
+                <input type="text" name="full_name" value="" placeholder="ФИО Преподавателя">
+                <input type="submit" value="Добавить">
+            </div>
 
-          <div class="edit_teacher" id="edit_teacher">
-            <p>
-              <select name = "teacher_select">
-                {% if teachers %}
-                  {% for teacher in  teachers %}
-                  	<option>{{teacher.teacher_name}}</option>
-                  {% endfor %}
-                {% endif %}
-              </select>
-            </p>
-              <input type="text" name="full_name2" value="" placeholder="Новое ФИО">
-              <input type="submit" value="Отправить">
-          </div>
+            <div class="edit_teacher" id="edit_teacher">
+                <p>
+                    <select name="teacher_select">
+                        {% if teachers %}
+                        {% for teacher in teachers %}
+                        <option>{{teacher.teacher_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </p>
+                <input type="text" name="full_name2" value="" placeholder="Новое ФИО">
+                <input type="submit" value="Редактировать">
+            </div>
 
-          <div class="delete_teacher" id="delete_teacher">
-              <input type="submit" value="Отправить">
-          </div>
-      </div>
-  </form>
+            <div class="delete_teacher" id="delete_teacher">
+                <p>
+                    <select name="teacher_select">
+                        {% if teachers %}
+                        {% for teacher in teachers %}
+                        <option>{{teacher.teacher_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </p>
+                <input type="submit" value="Отправить">
+            </div>
+        </div>
+    </form>
 </center>
 
 
