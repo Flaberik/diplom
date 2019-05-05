@@ -5,8 +5,9 @@ body{
 }
 
 div{
-    border: 1px Solid black;
+    /*border: 1px Solid black;
     padding: 5px 15px;
+    */
 }
 
 .add_teacher{
@@ -15,8 +16,6 @@ div{
 
 .delete_teacher{
   margin: 0 auto;
-  width: 350px;
-  height: 350px;
 }
 
 

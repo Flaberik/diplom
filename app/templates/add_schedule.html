@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+    table {
+        background: #DDECEE;
+    }
+
+    /* границы ячеек тела таблицы */
+    td {
+        margin: 0 auto;
+        align: center;
+    }
+
+    tr {
+        vertical-align: top;
+        align: center;
+        text-align: left;
+    }
+
+    center{
+
+    }
+</style>
+<center>
+    <form action="" method="POST" name="schedule">
+        {{ form.hidden_tag() }}
+        <table>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            Преподаватель:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="teacher_select" style="width: 250px;">
+                                {% if teachers %}
+                                {% for teacher in teachers %}
+                                <option>{{teacher.teacher_name}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Группа:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="group_select" style="width: 250px;">
+                                {% if groups %}
+                                {% for group in groups %}
+                                <option>{{group.group_name}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Дисциплина:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="lesson_select" style="width: 250px;">
+                                {% if lessons %}
+                                {% for lesson in lessons %}
+                                <option>{{lesson.lesson_name}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <input name="submit" type="submit" value="Внести" style="width: 250px;">
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            День:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="day_select" style="width: 150px;">
+                                <option>ПН</option>
+                                <option>ВТ</option>
+                                <option>СР</option>
+                                <option>ЧТ</option>
+                                <option>ПТ</option>
+                                <option>СБ</option>
+                                <option>ВС</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Пара:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="pair_select" style="width: 150px;">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Номер аудитории:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="num_room" value="" placeholder="" style="width: 150px;">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="che" value=""> Подмена
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </table>
+
+    </form>
+</center>
+{% endblock %}

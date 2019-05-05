@@ -15,32 +15,84 @@
 </head>
 <body>
 
+<style>
+    .tb {
+        border: 1px solid #C0C0C0;
+    }
+
+    .tr {
+        border: 1px solid #C0C0C0;
+    }
+
+    .th {
+        border: 1px solid #C0C0C0;
+    }
+
+    .td {
+        width: 150px;
+        height: 100px;
+        border: 1px solid #C0C0C0;
+    }
+
+    table {
+        margin: 0 auto;
+    }
+
+    /* границы ячеек первого ряда таблицы */
+    th {
+        text-align: center;
+    }
+
+    /* границы ячеек тела таблицы */
+    td {
+        padding: 2px;
+        margin: 0 auto;
+    }
+
+    tr {
+        vertical-align: top;
+        align: center;
+        text-align: center;
+    }
+</style>
+
 {% extends "base.html" %}
 {% block content %}
-
-<div>
-    <p>Выберите вариант</p>
-    <select name="form_select" size="5" multiple="multiple">
-        <option class="plit1" value="Значение 1">Первый вариант</option>
-        <option class="plit2" value="Значение 2">Второй вариант</option>
-        <option value="Значение 3">Третий вариант</option>
-        <option selected="selected" value="Значение 4">Четвертый вариант</option>
-        <option value="Значение 5">Пятый вариант</option>
-        <option value="Значение 6">Шестой вариант</option>
-    </select>
-</div>
-
-<form action="">
-
+<form action="" method="POST">
+    {{ form.hidden_tag() }}
+    <table>
+        <tr>
+            <td>
+                <select name="group_select" size="15" multiple="multiple">
+                    {% if groups %}
+                    {% for group in groups %}
+                    <option style="width: 120px;">{{group.group_name}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </td>
+            <td>
+                <table>
+                    {%for row in range(5) %}
+                    <tr></tr>
+                    {% for col in range(5) %}
+                    <td class="td"></td>
+                    {% endfor %}
+                    {% endfor %}
+                </table>
+            </td>
+            <td>
+                <select name="teacher_select" size="15" multiple="multiple">
+                    {% if groups %}
+                    {% for teacher in teachers %}
+                    <option style="width: 120px;">{{teacher.teacher_name}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </td>
+        </tr>
+    </table>
 </form>
-
-<div>
-    <h1>Hi, {{user.nickname}}!</h1>
-    {% for post in posts %}
-    <div><p>{{post.author.nickname}} says: <b>{{post.body}}</b></p></div>
-    {% endfor %}
-    {% endblock %}
-</div>
-
+{% endblock %}
 </body>
 </html>

@@ -2,37 +2,53 @@
 {% block content %}
 
 <style type="text/css">
-  .tabs { width: 100%; padding: 0px; margin: 0 auto; }
-  .tabs>input { display:none; }
-  .tabs>div {
-      display: none;
-      padding: 12px;
-      border: 1px solid #C0C0C0;
-  }
-  .tabs>label {
-      display: inline-block;
-      padding: 7px;
-      margin: 0 -5px -1px 0;
-      text-align: center;
-      color: #666666;
-      border: 1px solid #C0C0C0;
-      background: #E0E0E0;
-      cursor: pointer;
-  }
-  .tabs>input:checked + label {
-      color: #000000;
-      border: 1px solid #C0C0C0;
-      border-bottom: 1px solid #FFFFFF;
-      background: #FFFFFF;
-  }
+    .tabs {
+        width: 100%;
+        padding: 0px;
+        margin: 0 auto;
+    }
 
-  #tab_1:checked ~ #add_teacher,
-  #tab_2:checked ~ #edit_teacher,
-  #tab_3:checked ~ #delete_teacher { display: block;}
+    .tabs > input {
+        display: none;
+    }
+
+    .tabs > div {
+        display: none;
+        padding: 12px;
+        border: 1px solid #C0C0C0;
+    }
+
+    .tabs > label {
+        display: inline-block;
+        padding: 7px;
+        margin: 0 -5px -1px 0;
+        text-align: center;
+        color: #666666;
+        border: 1px solid #C0C0C0;
+        background: #E0E0E0;
+        cursor: pointer;
+    }
+
+    .tabs > input:checked + label {
+        color: #000000;
+        border: 1px solid #C0C0C0;
+        border-bottom: 1px solid #FFFFFF;
+        background: #FFFFFF;
+    }
+
+    #tab_1:checked ~ #add_teacher,
+    #tab_2:checked ~ #edit_teacher,
+    #tab_3:checked ~ #delete_teacher,
+    #tab_4:checked ~ #add_group,
+    #tab_5:checked ~ #edit_group,
+    #tab_6:checked ~ #delete_group {
+        display: block;
+    }
 
 </style>
 
 <center>
+    <p>Преподаватели</p>
     <form action="" method="post" name="teacher">
         {{ form.hidden_tag() }}
         <div class="tabs">
@@ -55,13 +71,13 @@
 
             <div class="add_teacher" id="add_teacher">
                 <label for="full_name">Ф.И.О.</label>
-                <input type="text" name="full_name" value="" placeholder="ФИО Преподавателя">
+                <input type="text" name="add_t_full_name" value="" placeholder="ФИО Преподавателя">
                 <input type="submit" value="Добавить">
             </div>
 
             <div class="edit_teacher" id="edit_teacher">
                 <p>
-                    <select name="teacher_select">
+                    <select name="edit_teacher_select">
                         {% if teachers %}
                         {% for teacher in teachers %}
                         <option>{{teacher.teacher_name}}</option>
@@ -75,7 +91,7 @@
 
             <div class="delete_teacher" id="delete_teacher">
                 <p>
-                    <select name="teacher_select">
+                    <select name="del_teacher_select">
                         {% if teachers %}
                         {% for teacher in teachers %}
                         <option>{{teacher.teacher_name}}</option>
@@ -89,6 +105,63 @@
     </form>
 </center>
 
+<center>
+    <p>Группы</p>
+    <form action="" method="post" name="teacher">
+        {{ form.hidden_tag() }}
+        <div class="tabs">
+
+            <input type="radio" name="inset" value="add_group" id="tab_4">
+            <label for="tab_4">Добавить</label>
+            <input type="radio" name="inset" value="edit_group" id="tab_5">
+            <label for="tab_5">Редактировать</label>
+            <input type="radio" name="inset" value="delete_group" id="tab_6">
+            <label for="tab_6">Удалить</label>
+
+            {% if inset == 'add_teacher'|string() %}
+            <input type="radio" name="inset" value="add_group" id="tab_4" checked>
+            {% elif inset == 'edit_teacher'|string() %}
+            <input type="radio" name="inset" value="edit_group" id="tab_5" checked>
+            {% elif inset == 'delete_teacher'|string() %}
+            <input type="radio" name="inset" value="delete_group" id="tab_6" checked>
+            {% endif %}
+
+
+            <div class="add_teacher" id="add_group">
+                <label for="full_name">Группа</label>
+                <input type="text" name="full_name" value="" placeholder="Название группы">
+                <input type="submit" value="Добавить">
+            </div>
+
+            <div class="edit_teacher" id="edit_group">
+                <p>
+                    <select name="group_select">
+                        {% if teachers %}
+                        {% for teacher in teachers %}
+                        <option>{{teacher.teacher_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </p>
+                <input type="text" name="full_name2" value="" placeholder="Новое название группы">
+                <input type="submit" value="Редактировать">
+            </div>
+
+            <div class="delete_teacher" id="delete_group">
+                <p>
+                    <select name="teacher_select1">
+                        {% if teachers %}
+                        {% for teacher in teachers %}
+                        <option>{{teacher.teacher_name}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </p>
+                <input type="submit" value="Отправить">
+            </div>
+        </div>
+    </form>
+</center>
 
 <div>
     <p>Выберите вариант</p>

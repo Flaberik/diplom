@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style type="text/css">
+    .tabs {
+        width: 100%;
+        padding: 0px;
+        margin: 0 auto;
+    }
+
+    .tabs > input {
+        display: none;
+    }
+
+    .tabs > div {
+        display: none;
+        padding: 12px;
+        border: 1px solid #C0C0C0;
+    }
+
+    .tabs > label {
+        display: inline-block;
+        padding: 7px;
+        margin: 0 -5px -1px 0;
+        text-align: center;
+        color: #666666;
+        border: 1px solid #C0C0C0;
+        background: #E0E0E0;
+        cursor: pointer;
+    }
+
+    .tabs > input:checked + label {
+        color: #000000;
+        border: 1px solid #C0C0C0;
+        border-bottom: 1px solid #FFFFFF;
+        background: #FFFFFF;
+    }
+
+    #tab_1:checked ~ #teachers,
+    #tab_2:checked ~ #groups,
+    #tab_3:checked ~ #lessons {
+        display: block;
+    }
+
+
+    /* внешние границы таблицы серого цвета толщиной 1px */
+    table {
+        margin: 0 auto;
+    }
+
+    /* границы ячеек первого ряда таблицы */
+    th {
+        text-align: center;
+    }
+
+    /* границы ячеек тела таблицы */
+    td {
+        padding: 2px;
+        margin: 0 auto;
+    }
+
+    tr {
+        vertical-align: top;
+        align: center;
+        text-align: center;
+    }
+
+    .tb {
+        border: 1px solid #C0C0C0;
+    }
+
+    .tr {
+        border: 1px solid #C0C0C0;
+    }
+
+    .th {
+        border: 1px solid #C0C0C0;
+    }
+
+    .td {
+        border: 1px solid #C0C0C0;
+    }
+
+</style>
+
+<center>
+    <p>Преподаватели</p>
+    <form action="" method="post" name="teacher">
+        {{ form.hidden_tag() }}
+        <div class="tabs">
+
+            <input type="radio" name="inset" value="teachers" id="tab_1">
+            <label for="tab_1">Преподаватели</label>
+            <input type="radio" name="inset" value="groups" id="tab_2">
+            <label for="tab_2">Группы</label>
+            <input type="radio" name="inset" value="lessons" id="tab_3">
+            <label for="tab_3">Дисциплины</label>
+
+            {% if inset == 'teachers'|string() %}
+            <input type="radio" name="inset" value="teachers" id="tab_1" checked>
+            {% elif inset == 'groups'|string() %}
+            <input type="radio" name="inset" value="groups" id="tab_2" checked>
+            {% elif inset == 'lessons'|string() %}
+            <input type="radio" name="inset" value="lessons" id="tab_3" checked>
+            {% endif %}
+
+            <div id="teachers">
+                <table class="tb">
+                    <tr class="tr">
+                        <th class="th">
+                            Добавление преподавателей
+                        </th>
+                        <th class="th">
+                            Редактирование преподавателей
+                        </th>
+                        <th class="th">
+                            Удаление преподавателей
+                        </th>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="add_teacher" value=""
+                                               placeholder="ФИО Преподавателя" style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="edit_teacher_select" style="width: 250px;">
+                                            {% if teachers %}
+                                            {% for teacher in teachers %}
+                                            <option>{{teacher.teacher_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="new_teacher_name" value="" placeholder="Новое ФИО"
+                                               style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="del_teacher_select" style="width: 250px;">
+                                            {% if teachers %}
+                                            {% for teacher in teachers %}
+                                            <option>{{teacher.teacher_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <div id="groups">
+                <table class="tb">
+                    <tr class="tr">
+                        <th class="th">
+                            Добавление групп
+                        </th>
+                        <th class="th">
+                            Редактирование групп
+                        </th>
+                        <th class="th">
+                            Удаление групп
+                        </th>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="add_group" value=""
+                                               placeholder="Наименование группы" style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="edit_group_select" style="width: 250px;">
+                                            {% if groups %}
+                                            {% for group in groups %}
+                                            <option>{{group.group_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="new_group_name" value=""
+                                               placeholder="Новое наименование"
+                                               style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="del_group_select" style="width: 250px;">
+                                            {% if groups %}
+                                            {% for group in groups %}
+                                            <option>{{group.group_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            <div id="lessons">
+                <table class="tb">
+                    <tr class="tr">
+                        <th class="th">
+                            Добавление дисциплин
+                        </th>
+                        <th class="th">
+                            Редактирование дисциплин
+                        </th>
+                        <th class="th">
+                            Удаление дисциплин
+                        </th>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="add_lesson" value=""
+                                               placeholder="Наименование дисциплины" style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="edit_lesson_select" style="width: 250px;">
+                                            {% if lessons %}
+                                            {% for lesson in lessons %}
+                                            <option>{{lesson.lesson_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="new_lesson_name" value="" placeholder="Новое наименование"
+                                               style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="del_lesson_select" style="width: 250px;">
+                                            {% if lessons %}
+                                            {% for lesson in lessons %}
+                                            <option>{{lesson.lesson_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</center>
+
+<div>
+    <p>Выберите вариант</p>
+    <select name="form_select" size="5" multiple="multiple">
+        <option class="plit1" value="select2">Первый вариант</option>
+        <option class="plit2" value="Значение 2">Второй вариант</option>
+        <option value="Значение 3">Третий вариант</option>
+        <option value="Значение 4">Четвертый вариант</option>
+        <option value="Значение 5">Пятый вариант</option>
+        <option value="Значение 6">Шестой вариант</option>
+    </select>
+</div>
+<input type="submit" value="Отправить">
+
+
+{% endblock %}

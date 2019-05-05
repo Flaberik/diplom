@@ -29,38 +29,128 @@ def login():
 
 
 # ---------------------------------------------------------------------#
+@app.route('/t', methods=['GET', 'POST'])
+def test():
+    form = TeacherForm()
+    if form.validate_on_submit():
+        schedule = Schedule(group_id=Groups.query.filter_by(group_name=request.form['group_select']).first().id,
+                            teacher_id=Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id,
+                            lesson_id=Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id,
+                            num_room=request.form['num_room'], day_week=request.form['day_select'],
+                            pair=request.form['pair_select'])
+        db.session.add(schedule)
+        db.session.commit()
+
+        pass
+
+    result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
+                                                                          Schedule.teacher_id == Teachers.id,
+                                                                          Schedule.lesson_id == Lessons.id).all()
+    for s, g, t, l in result:
+        flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
+
+    teachers = Teachers.query.all()
+    groups = Groups.query.all()
+    lessons = Lessons.query.all()
+
+    return render_template('add_schedule.html', title='Schedule', form=form, teachers=teachers, groups=groups,
+                           lessons=lessons)
+
+
+# ---------------------------------------------------------------------#
 @app.route('/teacher', methods=['GET', 'POST'])
 def teacher():
     form = TeacherForm()
-    teachers = Teachers.query.all()
     inset = ''
+    submit = ''
     if form.validate_on_submit():
         inset = request.form['inset']
-        if inset == 'add_teacher':
-            try:
-                teacher = Teachers(teacher_name = request.form['full_name'])
-                db.session.add(teacher)
-                db.session.commit()
-            except:
-                db.session.rollback()
+        submit = request.form['submit']
 
-        elif inset == 'edit_teacher':
-            try:
-                t_name = request.form['full_name2']
-                if len(t_name) > 1:
-                    db.session.query(Teachers).filter_by(teacher_name=request.form['teacher_select']).update({'teacher_name': t_name})
+        if inset == 'teachers':
+            if submit == 'Добавить':
+                try:
+                    teacher = Teachers(teacher_name=request.form['add_teacher'])
+                    db.session.add(teacher)
                     db.session.commit()
-            except:
-                db.session.rollback()
-            return render_template('teacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
-        elif inset == 'delete_teacher':
-            try:
-                Teachers.query().filter_by(teacher_name = request.form['teacher_select']).delete()
-                db.session.commit()
-            except:
-                db.session.rollback()
+                except:
+                    db.session.rollback()
 
-    return render_template('teacher.html', title='Teachers', form=form, inset = '', teachers = teachers)
+            elif submit == 'Редактировать':
+                try:
+                    t_name = request.form['new_teacher_name']
+                    if len(t_name) > 1:
+                        db.session.query(Teachers).filter_by(teacher_name=request.form['edit_teacher_select']).update(
+                            {'teacher_name': t_name})
+                        db.session.commit()
+                except:
+                    db.session.rollback()
+                # return render_template('newteacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
+            elif submit == 'Удалить':
+                try:
+                    db.session.query(Teachers).filter_by(teacher_name=request.form['del_teacher_select']).delete()
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
+        if inset == 'groups':
+            if submit == 'Добавить':
+                try:
+                    group = Groups(group_name=request.form['add_group'])
+                    db.session.add(group)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
+            elif submit == 'Редактировать':
+                try:
+                    t_name = request.form['new_group_name']
+                    if len(t_name) > 1:
+                        db.session.query(Groups).filter_by(group_name=request.form['edit_group_select']).update(
+                            {'group_name': t_name})
+                        db.session.commit()
+                except:
+                    db.session.rollback()
+
+            elif submit == 'Удалить':
+                try:
+                    db.session.query(Groups).filter_by(group_name=request.form['del_group_select']).delete()
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
+        if inset == 'lessons':
+            if submit == 'Добавить':
+                try:
+                    lesson = Lessons(lesson_name=request.form['add_lesson'])
+                    db.session.add(lesson)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
+            elif submit == 'Редактировать':
+                try:
+                    t_name = request.form['new_lesson_name']
+                    if len(t_name) > 1:
+                        db.session.query(Lessons).filter_by(lesson_name=request.form['edit_lesson_select']).update(
+                            {'lesson_name': t_name})
+                        db.session.commit()
+                except:
+                    db.session.rollback()
+
+            elif submit == 'Удалить':
+                try:
+                    db.session.query(Lessons).filter_by(lesson_name=request.form['del_lesson_select']).delete()
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+
+    teachers = Teachers.query.all()
+    groups = Groups.query.all()
+    lessons = Lessons.query.all()
+
+    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=teachers,
+                           groups=groups, lessons=lessons)
 
 
 # ---------------------------------------------------------------------#
@@ -109,18 +199,10 @@ def signin():
 def index():
     user = g.user
 
-    posts = [
-        {
-            'author': {'nickname': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'nickname': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-
-    return render_template("index.html", title="home", posts=posts, user=user)
+    teachers = Teachers.query.all()
+    groups = Groups.query.all()
+    lessons = Lessons.query.all()
+    return render_template("index.html", title="home", user=user, form=FlaskForm(), teachers=teachers, groups=groups, v = {'blop':False})
 
 
 def md5(text):
