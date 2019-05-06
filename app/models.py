@@ -55,5 +55,8 @@ class Schedule(db.Model):
     denom = db.Column(db.String(1), index=True)
     hash_sum = db.Column(db.String(128), index=True, unique=True)
 
+    def __json__(self):
+        return ['id', 'group_id', 'lesson_id', 'teacher_id']
     def __repr__(self):
         return '<Schedule %r>' % (self.id)
+        # return "'id': %a, 'group_id': %a, 'lesson_id': %a" % (self.id, self.group_id, self.lesson_id)

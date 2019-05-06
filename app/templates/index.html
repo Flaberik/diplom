@@ -12,6 +12,29 @@
     {% else %}
     <title>Welcome to microblog</title>
     {% endif %}
+
+    <script>
+        <!--
+        function func1(id) {
+            var myD = document.getElementById(id);
+            //alert(myD.innerHTML)
+            //myD.innerHTML += id
+            //var Txt1 = "";
+            //var Txt2 = "";
+            //Txt1 = document.test.bb.value;
+            //Txt2 = document.test.bb.name;
+            //alert('hello');
+            //alert(Txt1.bold());
+        }
+
+        function func2(result) {
+            //alert('hello');
+            var data = JSON.parse(result);
+            alert(data[Object.keys(data)[0]]);
+        }
+
+        //-->
+    </script>
 </head>
 <body>
 
@@ -59,52 +82,54 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form action="" method="POST">
+<form action="" method="POST" name="test">
     {{ form.hidden_tag() }}
-
     <table>
         <tr>
-            <tr>
-              <td>
-                  Группы:
-              </td>
-            </tr>
+        <tr>
             <td>
-                <select name="group_select" size="15" multiple="multiple">
-                    {% if groups %}
-                    {% for group in groups %}
-                    <option style="width: 120px;">{{group.group_name}}</option>
-                    {% endfor %}
+                Группы:
+            </td>
+        </tr>
+        <td>
+
+            <select name="group_select" size="15" multiple="multiple">
+                {% for group in groups %}
+                <option style="width: 120px;" onclick="func2('{{js}}')">{{group.group_name}}</option>
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            <table>
+                {%for row in range(5) %}
+                {% for col in range(5) %}
+                <td class="td">
+                    {% for s,g,t,l in result %}
+                    {% if col+1 == days_enum[s.day_week]%}
+                    {% if row+1 == s.pair|int %}
+                    <div onclick="func1('{{(row+1)|string + (col+1)|string}}')" id="{{(row+1)|string + (col+1)|string}}"
+                         value="{'day': {col+1}, 'pair': {row+1}}">
+                        {{l.lesson_name}} {{t.teacher_name}} {{s.num_room}}
+                    </div>
+
                     {% endif %}
-                </select>
-            </td>
-            <td>
-                <table>
-                    {%for row in range(5) %}
-                    {% for col in range(5) %}
-                    <td class="td">
-                        {% for s,g,t,l in result %}
-                            {% if col+1 == days_enum[s.day_week]%}
-                              {% if row+1 == s.pair|int %}
-                                  {{l.lesson_name}} {{t.teacher_name}} {{s.num_room}}
-                              {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                    {% endfor %}
-                    <tr></tr>
-                    {% endfor %}
-                </table>
-            </td>
-            <td>
-                <select name="teacher_select" size="15" multiple="multiple">
-                    {% if groups %}
-                    {% for teacher in teachers %}
-                    <option style="width: 120px;">{{teacher.teacher_name}}</option>
-                    {% endfor %}
                     {% endif %}
-                </select>
-            </td>
+                    {% endfor %}
+                </td>
+                {% endfor %}
+                <tr></tr>
+                {% endfor %}
+            </table>
+        </td>
+        <td>
+            <select name="teacher_select" size="15" multiple="multiple">
+                {% if groups %}
+                {% for teacher in teachers %}
+                <option style="width: 120px;">{{teacher.teacher_name}}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </td>
         </tr>
     </table>
 </form>

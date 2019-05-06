@@ -1,12 +1,14 @@
 import hashlib
+import json
 
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, current_user
 
+from marshmallow import Schema, fields, pprint
 import sqlalchemy
 from sqlalchemy import inspect
 
-from app import app
+from app import app, AlchemyEncoder
 from app import db, oid
 from app.forms import *
 from app.models import *
@@ -41,8 +43,8 @@ def test():
         sch = Schedule.query.filter_by(hash_sum=hash).first()
         if sch is None:
             flash('None')
-            schedule = Schedule(group_id= group_id,
-                                teacher_id= teacher_id,
+            schedule = Schedule(group_id=group_id,
+                                teacher_id=teacher_id,
                                 lesson_id=lesson_id,
                                 num_room=request.form['num_room'], day_week=request.form['day_select'],
                                 pair=request.form['pair_select'], hash_sum=hash)
@@ -54,18 +56,16 @@ def test():
                 {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
             db.session.commit()
 
-
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
                                                                           Schedule.teacher_id == Teachers.id,
                                                                           Schedule.lesson_id == Lessons.id).all()
-    #flash(result[0])
-    #for s, g, t, l in result:
-        #flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
+    # flash(result[0])
+    # for s, g, t, l in result:
+    # flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
 
     teachers = Teachers.query.all()
     groups = Groups.query.all()
     lessons = Lessons.query.all()
-
     return render_template('add_schedule.html', title='Schedule', form=form, teachers=teachers, groups=groups,
                            lessons=lessons)
 
@@ -218,8 +218,11 @@ def index():
     groups = Groups.query.all()
 
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
+    r = db.session.query(Schedule).all()
+    jsonM = json.dumps(r, cls=AlchemyEncoder)
+    #flash(jsonM[0])
     return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
-                            teachers=teachers, groups=groups, days_enum = days_enum, result = result)
+                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, js=jsonM)
 
 
 def md5(text):
