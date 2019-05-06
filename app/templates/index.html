@@ -58,10 +58,17 @@
 
 {% extends "base.html" %}
 {% block content %}
+
 <form action="" method="POST">
     {{ form.hidden_tag() }}
+
     <table>
         <tr>
+            <tr>
+              <td>
+                  Группы:
+              </td>
+            </tr>
             <td>
                 <select name="group_select" size="15" multiple="multiple">
                     {% if groups %}
@@ -74,10 +81,18 @@
             <td>
                 <table>
                     {%for row in range(5) %}
-                    <tr></tr>
                     {% for col in range(5) %}
-                    <td class="td"></td>
+                    <td class="td">
+                        {% for s,g,t,l in result %}
+                            {% if col+1 == days_enum[s.day_week]%}
+                              {% if row+1 == s.pair|int %}
+                                  {{l.lesson_name}} {{t.teacher_name}} {{s.num_room}}
+                              {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     {% endfor %}
+                    <tr></tr>
                     {% endfor %}
                 </table>
             </td>

@@ -33,21 +33,34 @@ def login():
 def test():
     form = TeacherForm()
     if form.validate_on_submit():
-        schedule = Schedule(group_id=Groups.query.filter_by(group_name=request.form['group_select']).first().id,
-                            teacher_id=Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id,
-                            lesson_id=Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id,
-                            num_room=request.form['num_room'], day_week=request.form['day_select'],
-                            pair=request.form['pair_select'])
-        db.session.add(schedule)
-        db.session.commit()
+        group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
+        teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
+        lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
 
-        pass
+        hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']))
+        sch = Schedule.query.filter_by(hash_sum=hash).first()
+        if sch is None:
+            flash('None')
+            schedule = Schedule(group_id= group_id,
+                                teacher_id= teacher_id,
+                                lesson_id=lesson_id,
+                                num_room=request.form['num_room'], day_week=request.form['day_select'],
+                                pair=request.form['pair_select'], hash_sum=hash)
+            db.session.add(schedule)
+            db.session.commit()
+        else:
+            flash('not none')
+            db.session.query(Schedule).filter_by(hash_sum=hash).update(
+                {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
+            db.session.commit()
+
 
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
                                                                           Schedule.teacher_id == Teachers.id,
                                                                           Schedule.lesson_id == Lessons.id).all()
-    for s, g, t, l in result:
-        flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
+    #flash(result[0])
+    #for s, g, t, l in result:
+        #flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
 
     teachers = Teachers.query.all()
     groups = Groups.query.all()
@@ -198,11 +211,15 @@ def signin():
 @app.route('/index')
 def index():
     user = g.user
-
+    result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
+                                                                          Schedule.teacher_id == Teachers.id,
+                                                                          Schedule.lesson_id == Lessons.id).all()
     teachers = Teachers.query.all()
     groups = Groups.query.all()
-    lessons = Lessons.query.all()
-    return render_template("index.html", title="home", user=user, form=FlaskForm(), teachers=teachers, groups=groups, v = {'blop':False})
+
+    days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
+    return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
+                            teachers=teachers, groups=groups, days_enum = days_enum, result = result)
 
 
 def md5(text):
