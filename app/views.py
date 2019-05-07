@@ -1,12 +1,14 @@
 import hashlib
 import json
+import jsonpickle
 
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, current_user
 
 from marshmallow import Schema, fields, pprint
 import sqlalchemy
-from sqlalchemy import inspect
+from sqlalchemy import *
+from sqlalchemy.ext.serializer import *
 
 from app import app, AlchemyEncoder
 from app import db, oid
@@ -218,11 +220,12 @@ def index():
     groups = Groups.query.all()
 
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
-    r = db.session.query(Schedule).all()
-    jsonM = json.dumps(r, cls=AlchemyEncoder)
-    #flash(jsonM[0])
+
+    #testV.append([{'id': 1},{'id': 2}])
+    #flash(groups.__dict__)
+
     return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
-                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, js=jsonM)
+                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test='')
 
 
 def md5(text):

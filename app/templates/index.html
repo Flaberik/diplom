@@ -29,8 +29,8 @@
 
         function func2(result) {
             //alert('hello');
-            var data = JSON.parse(result);
-            alert(data[Object.keys(data)[0]]);
+            //var data = JSON.parse(result);
+            alert(result);
         }
 
         //-->
@@ -95,7 +95,7 @@
 
             <select name="group_select" size="15" multiple="multiple">
                 {% for group in groups %}
-                <option style="width: 120px;" onclick="func2('{{js}}')">{{group.group_name}}</option>
+                <option style="width: 120px;" onclick="func2('{{test|safe}}')">{{group.group_name}}</option>
                 {% endfor %}
             </select>
         </td>

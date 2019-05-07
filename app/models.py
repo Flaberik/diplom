@@ -23,7 +23,8 @@ class Teachers(db.Model):
     teacher_name = db.Column(db.String(128), index=True, unique=True)
 
     def __repr__(self):
-        return '<Teacher %r>' % (self.teacher_name)
+        return "'id': %r, 'teacher_name': %r" % (self.id, self.teacher_name)
+        #return '<Teacher %r>' % (self.teacher_name)
 
 
 class Lessons(db.Model):
@@ -31,7 +32,8 @@ class Lessons(db.Model):
     lesson_name = db.Column(db.String(128), index=True, unique=True)
 
     def __repr__(self):
-        return '<Lesson %r>' % (self.lesson_name)
+        return "'id': %r, 'lesson_name': %r" % (self.id, self.lesson_name)
+        #return '<Lesson %r>' % (self.lesson_name)
 
 
 class Groups(db.Model):
@@ -40,7 +42,19 @@ class Groups(db.Model):
     group_name = db.Column(db.String(128), index=True, unique=True)
 
     def __repr__(self):
-        return '<Group %r>' % (self.group_name)
+        return "'id': %r, 'group_name': %r" % (self.id, self.group_name)
+        #return '<Group %r>' % (self.group_name)
+
+    def serialize(self, whatTo):
+        result = {}
+        if 'id' in whatTo:
+            result['id'] = self.id
+        if 'group_name' in whatTo:
+            result['date'] = str(self.group_name)
+        return result
+
+    def as_dict(self):
+       return {c.group_name: getattr(self, c.group_name) for c in self.__table__.columns}
 
 
 class Schedule(db.Model):
@@ -58,5 +72,5 @@ class Schedule(db.Model):
     def __json__(self):
         return ['id', 'group_id', 'lesson_id', 'teacher_id']
     def __repr__(self):
-        return '<Schedule %r>' % (self.id)
-        # return "'id': %a, 'group_id': %a, 'lesson_id': %a" % (self.id, self.group_id, self.lesson_id)
+        #return '<Schedule %r>' % (self.id)
+        return "'id': %a, 'group_id': %a, 'lesson_id': %a, 'teacher_id': %a, 'day_week': %a, 'pair': %a, 'num_room': %a, 'denom': %a" % (self.id, self.group_id, self.lesson_id, self.teacher_id, self.day_week, self.pair, self.num_room, self.denom)
