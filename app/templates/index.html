@@ -17,6 +17,7 @@
         <!--
         function func1(id) {
             var myD = document.getElementById(id);
+            console.log(id)
             //alert(myD.innerHTML)
             //myD.innerHTML += id
             //var Txt1 = "";
@@ -27,10 +28,31 @@
             //alert(Txt1.bold());
         }
 
-        function func2(result) {
-            //alert('hello');
-            //var data = JSON.parse(result);
-            alert(result);
+        function select(result, days_enum, group_name, teacher_name) {
+            clear_tabel();
+            if (group_name.length > 1)
+                for (var i = 0; i < result[0].length; i++) {
+                    if (result[1][i].group_name == group_name) {
+                        var myD = document.getElementById(days_enum[result[0][i].day_week] + result[0][i].pair);
+                        myD.innerText = result[3][i].lesson_name + ' ' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+                    }
+                }
+            if (teacher_name.length > 1)
+                for (var i = 0; i < result[0].length; i++) {
+                    if (result[2][i].teacher_name == teacher_name) {
+                        var myD = document.getElementById(days_enum[result[0][i].day_week] + result[0][i].pair);
+                        myD.innerText = result[3][i].lesson_name + ' ' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+                    }
+                }
+        }
+
+        function clear_tabel() {
+            for (var i = 1; i <= 5; i++) {
+                for (var j = 1; j <= 5; j++) {
+                    var myD = document.getElementById(String(i) + String(j));
+                    myD.innerHTML = '';
+                }
+            }
         }
 
         //-->
@@ -61,15 +83,13 @@
         margin: 0 auto;
     }
 
-    /* границы ячеек первого ряда таблицы */
     th {
         text-align: center;
     }
 
-    /* границы ячеек тела таблицы */
     td {
         padding: 2px;
-        margin: 0 auto;
+
     }
 
     tr {
@@ -95,26 +115,40 @@
 
             <select name="group_select" size="15" multiple="multiple">
                 {% for group in groups %}
-                <option style="width: 120px;" onclick="func2('{{test|safe}}')">{{group.group_name}}</option>
+                <option style="width: 120px;"
+                        onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
+                    {{group.group_name}}
+                </option>
                 {% endfor %}
             </select>
         </td>
         <td>
             <table>
+                <tr>
+                    <td style="border: 1px solid #C0C0C0;">
+                        ПН
+                    </td>
+                    <td style="border: 1px solid #C0C0C0;">
+                        ВТ
+                    </td>
+                    <td style="border: 1px solid #C0C0C0;">
+                        СР
+                    </td>
+                    <td style="border: 1px solid #C0C0C0;">
+                        ЧТ
+                    </td>
+                    <td style="border: 1px solid #C0C0C0;">
+                        ПТ
+                    </td>
+                </tr>
                 {%for row in range(5) %}
                 {% for col in range(5) %}
-                <td class="td">
-                    {% for s,g,t,l in result %}
-                    {% if col+1 == days_enum[s.day_week]%}
-                    {% if row+1 == s.pair|int %}
-                    <div onclick="func1('{{(row+1)|string + (col+1)|string}}')" id="{{(row+1)|string + (col+1)|string}}"
-                         value="{'day': {col+1}, 'pair': {row+1}}">
-                        {{l.lesson_name}} {{t.teacher_name}} {{s.num_room}}
-                    </div>
 
-                    {% endif %}
-                    {% endif %}
-                    {% endfor %}
+                <td class="td">
+
+                    <div onclick="func1('{{(row+1)|string + (col+1)|string}}')"
+                         id="{{(row+1)|string + (col+1)|string}}">
+                    </div>
                 </td>
                 {% endfor %}
                 <tr></tr>
@@ -125,7 +159,10 @@
             <select name="teacher_select" size="15" multiple="multiple">
                 {% if groups %}
                 {% for teacher in teachers %}
-                <option style="width: 120px;">{{teacher.teacher_name}}</option>
+                <option style="width: 120px;"
+                        onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">
+                    {{teacher.teacher_name}}
+                </option>
                 {% endfor %}
                 {% endif %}
             </select>
@@ -136,3 +173,4 @@
 {% endblock %}
 </body>
 </html>
+

@@ -221,11 +221,16 @@ def index():
 
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
 
-    #testV.append([{'id': 1},{'id': 2}])
-    #flash(groups.__dict__)
+    res = [[],[],[],[]]
+    for sh, gr, te, le in result:
+        res[0].append({'day_week': sh.day_week, 'pair': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom})
+        res[1].append({'group_name': gr.group_name})
+        res[2].append({'teacher_name': te.teacher_name})
+        res[3].append({'lesson_name': le.lesson_name})
 
+    #flash(res)
     return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
-                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test='')
+                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test=res)
 
 
 def md5(text):

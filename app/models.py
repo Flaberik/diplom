@@ -66,7 +66,7 @@ class Schedule(db.Model):
     day_week = db.Column(db.String(2), index=True)
     pair = db.Column(db.String(1), index=True)
     num_room = db.Column(db.String(4), index=True)
-    denom = db.Column(db.String(1), index=True)
+    denom = db.Column(db.String(1), index=True, default='0')
     hash_sum = db.Column(db.String(128), index=True, unique=True)
 
     def __json__(self):
