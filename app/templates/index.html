@@ -17,15 +17,8 @@
         <!--
         function func1(id) {
             var myD = document.getElementById(id);
+            var newForm = document.getElementById('t1');
             console.log(id)
-            //alert(myD.innerHTML)
-            //myD.innerHTML += id
-            //var Txt1 = "";
-            //var Txt2 = "";
-            //Txt1 = document.test.bb.value;
-            //Txt2 = document.test.bb.name;
-            //alert('hello');
-            //alert(Txt1.bold());
         }
 
         function select(result, days_enum, group_name, teacher_name) {
@@ -33,26 +26,50 @@
             if (group_name.length > 1)
                 for (var i = 0; i < result[0].length; i++) {
                     if (result[1][i].group_name == group_name) {
-                        var myD = document.getElementById(days_enum[result[0][i].day_week] + result[0][i].pair);
-                        myD.innerText = result[3][i].lesson_name + ' ' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair))
                     }
                 }
             if (teacher_name.length > 1)
                 for (var i = 0; i < result[0].length; i++) {
                     if (result[2][i].teacher_name == teacher_name) {
-                        var myD = document.getElementById(days_enum[result[0][i].day_week] + result[0][i].pair);
-                        myD.innerText = result[3][i].lesson_name + ' ' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair))
                     }
                 }
+
+            //printInfo(newForm)
+        }
+
+        function fill_div(par1,par2,par3,id){
+          var myD = document.getElementById(id);
+          myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+          create_new_div(id,myD,(par1 + '<br>' + par2 + ' ' + par3))
+        }
+
+        function printInfo(ele) {
+            var openWindow = window.open("", "title", "attributes");
+            openWindow.document.write(ele.innerHTML);
+            openWindow.document.close();
+            openWindow.focus();
+            openWindow.print();
+            openWindow.close();
         }
 
         function clear_tabel() {
             for (var i = 1; i <= 5; i++) {
                 for (var j = 1; j <= 5; j++) {
                     var myD = document.getElementById(String(i) + String(j));
-                    myD.innerHTML = '';
+                    myD.innerHTML = ''
+                    create_new_div((String(i) + String(j)), myD, '<br><br><br><br>')
                 }
             }
+        }
+
+        function create_new_div(id,parent,text){
+          var newD = document.createElement('div');
+          newD.innerHTML = text;
+          newD.id = id;
+          newD.onclick = function(){func1(id)}
+          parent.appendChild(newD);
         }
 
         //-->
@@ -101,10 +118,14 @@
 
 {% extends "base.html" %}
 {% block content %}
+<center>
+  <div id="newForm" style="margin: 0 auto;">
 
+  </div>
+</center>
 <form action="" method="POST" name="test">
     {{ form.hidden_tag() }}
-    <table>
+    <table style="margin-bottom: 25px;">
         <tr>
         <tr>
             <td>
@@ -123,7 +144,8 @@
             </select>
         </td>
         <td>
-            <table>
+            <div id="t1">
+            <table >
                 <tr>
                     <td style="border: 1px solid #C0C0C0;">
                         ПН
@@ -144,16 +166,14 @@
                 {%for row in range(5) %}
                 {% for col in range(5) %}
 
-                <td class="td">
+                <td class="td" id="{{(row+1)|string + (col+1)|string}}">
 
-                    <div onclick="func1('{{(row+1)|string + (col+1)|string}}')"
-                         id="{{(row+1)|string + (col+1)|string}}">
-                    </div>
                 </td>
                 {% endfor %}
                 <tr></tr>
                 {% endfor %}
             </table>
+          </div id="t1">
         </td>
         <td>
             <select name="teacher_select" size="15" multiple="multiple">
@@ -173,4 +193,3 @@
 {% endblock %}
 </body>
 </html>
-
