@@ -15,34 +15,191 @@
 
     <script>
         <!--
+        result = "{{test|safe}}";
+        teachers = "{{teachers|safe}}";
+
+
         function func1(id) {
             var myD = document.getElementById(id);
-            var newForm = document.getElementById('t1');
-            console.log(id)
+
+            var newForm = document.getElementById('newForm');
+            var value = myD.value;
+            console.log(result[1].length);
+            select_teacher =
+                '<select name="teacher_select" style="width: 250px;">' +
+                '        <option selected></option>' +
+                '         <option>  </option>' +
+                '</select>';
+            console.log(teachers.length);
+            for (var i = 0; i < teachers.length; i++) {
+                //console.log(teachers[i]);
+                if(teachers[i].teacher_name == value.teacher_name)
+                    console.log('helloy');
+            }
+
+            //if(value.teacher_name = '{% for teacher in teachers %}{{teacher_name}}{%endfor%}')
+
+            newForm.innerHTML =
+                '    <form action="" method="POST" name="schedule">\n' +
+                '        {{ form.hidden_tag() }}\n' +
+                '        <table style="border: 1px solid #C0C0C0">\n' +
+                '            <td>\n' +
+                '                <table>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            Преподаватель:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                'select_t' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            Группа:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <select name="group_select" style="width: 250px;">\n' +
+                '                                {% if groups %}\n' +
+                '                                {% for group in groups %}\n' +
+                '                                {% if group.group_name == ' + value.group_name + ' %}' +
+                '                                <option selected>{{group.group_name}}</option>\n' +
+                '                                {% else %}' +
+                '                                <option>{{group.group_name}}</option>\n' +
+                '                                {% endif %}' +
+                '                                {% endfor %}\n' +
+                '                                {% endif %}\n' +
+                '                            </select>\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            Дисциплина:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <select name="lesson_select" style="width: 250px;">\n' +
+                '                                {% if lessons %}\n' +
+                '                                {% for lesson in lessons %}\n' +
+                '                                {% if lesson.lesson_name == ' + value.lesson_name + ' %}' +
+                '                                <option selected>{{lesson.lesson_name}}</option>\n' +
+                '                                {% else %}' +
+                '                                <option>{{lesson.lesson_name}}</option>\n' +
+                '                                {% endif %}' +
+                '                                {% endfor %}\n' +
+                '                                {% endif %}\n' +
+                '                            </select>\n' +
+                '                        </td>\n' +
+                '\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <input name="submit" type="submit" value="Внести" style="width: 250px;">\n' +
+                '                        </td>\n' +
+                '\n' +
+                '                    </tr>\n' +
+                '                </table>\n' +
+                '            </td>\n' +
+                '            <td>\n' +
+                '                <table>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            День:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <select name="day_select" style="width: 150px;">\n' +
+                '                                <option>ПН</option>\n' +
+                '                                <option>ВТ</option>\n' +
+                '                                <option>СР</option>\n' +
+                '                                <option>ЧТ</option>\n' +
+                '                                <option>ПТ</option>\n' +
+                '                                <option>СБ</option>\n' +
+                '                                <option>ВС</option>\n' +
+                '                            </select>\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            Пара:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <select name="pair_select" style="width: 150px;">\n' +
+                '                                <option>1</option>\n' +
+                '                                <option>2</option>\n' +
+                '                                <option>3</option>\n' +
+                '                                <option>4</option>\n' +
+                '                                <option>5</option>\n' +
+                '                                <option>6</option>\n' +
+                '                            </select>\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            Номер аудитории:\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <input type="text" name="num_room" value="" placeholder="" style="width: 150px;">\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '\n' +
+                '                    <tr>\n' +
+                '                        <td>\n' +
+                '                            <input type="checkbox" name="che" value=""> Подмена\n' +
+                '                        </td>\n' +
+                '                    </tr>\n' +
+                '\n' +
+                '                </table>\n' +
+                '            </td>\n' +
+                '        </table>\n' +
+                '\n' +
+                '    </form>';
+            /*                '<form action="" method="POST" style="border: 1px solid #C0C0C0;">\n' +
+                            '     {{ form.hidden_tag() }} ' +
+                            '     <table>' +
+                            '     </table>' +
+                            '</form>\n';*/
+            //console.log(myD.id);
+            console.log(myD.value.teacher_name)
         }
 
         function select(result, days_enum, group_name, teacher_name) {
             clear_tabel();
-            if (group_name.length > 1)
-                for (var i = 0; i < result[0].length; i++) {
-                    if (result[1][i].group_name == group_name) {
-                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair))
-                    }
-                }
-            if (teacher_name.length > 1)
-                for (var i = 0; i < result[0].length; i++) {
-                    if (result[2][i].teacher_name == teacher_name) {
-                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair))
-                    }
-                }
+            for (var i = 0; i < result[0].length; i++) {
+                value = {
+                    'group_name': result[1][i].group_name,
+                    'teacher_name': result[2][i].teacher_name,
+                    'lesson_name': result[3][i].lesson_name,
+                    'num_room': result[0][i].num_room,
+                    'day_week': result[0][i].day_week,
+                    'pair': result[0][i].pair
+                };
 
-            //printInfo(newForm)
+                if (group_name.length > 1)
+                    if (result[1][i].group_name == group_name) {
+                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                    }
+
+                if (teacher_name.length > 1)
+                    if (result[2][i].teacher_name == teacher_name) {
+                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                    }
+            }
         }
 
-        function fill_div(par1,par2,par3,id){
-          var myD = document.getElementById(id);
-          myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
-          create_new_div(id,myD,(par1 + '<br>' + par2 + ' ' + par3))
+        function fill_div(par1, par2, par3, id, value) {
+            var myD = document.getElementById(id);
+            myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+            create_new_div(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
 
         function printInfo(ele) {
@@ -58,18 +215,21 @@
             for (var i = 1; i <= 5; i++) {
                 for (var j = 1; j <= 5; j++) {
                     var myD = document.getElementById(String(i) + String(j));
-                    myD.innerHTML = ''
-                    create_new_div((String(i) + String(j)), myD, '<br><br><br><br>')
+                    myD.innerHTML = '';
+                    create_new_div((String(i) + String(j)), myD, '<br><br><br><br>', '');
                 }
             }
         }
 
-        function create_new_div(id,parent,text){
-          var newD = document.createElement('div');
-          newD.innerHTML = text;
-          newD.id = id;
-          newD.onclick = function(){func1(id)}
-          parent.appendChild(newD);
+        function create_new_div(id, parent, text, value) {
+            var newD = document.createElement("div");
+            newD.innerHTML = text;
+            newD.id = (id + "div");
+            newD.value = value;
+            newD.onclick = function () {
+                func1(newD.id)
+            };
+            parent.appendChild(newD);
         }
 
         //-->
@@ -119,11 +279,11 @@
 {% extends "base.html" %}
 {% block content %}
 <center>
-  <div id="newForm" style="margin: 0 auto;">
+    <div id="newForm" style="margin: 0 auto;">
 
-  </div>
+    </div>
 </center>
-<form action="" method="POST" name="test">
+<form action="" method="POST" name="test" style="border: 1px solid #C0C0C0;">
     {{ form.hidden_tag() }}
     <table style="margin-bottom: 25px;">
         <tr>
@@ -145,39 +305,39 @@
         </td>
         <td>
             <div id="t1">
-            <table >
-                <tr>
-                    <td style="border: 1px solid #C0C0C0;">
-                        ПН
-                    </td>
-                    <td style="border: 1px solid #C0C0C0;">
-                        ВТ
-                    </td>
-                    <td style="border: 1px solid #C0C0C0;">
-                        СР
-                    </td>
-                    <td style="border: 1px solid #C0C0C0;">
-                        ЧТ
-                    </td>
-                    <td style="border: 1px solid #C0C0C0;">
-                        ПТ
-                    </td>
-                </tr>
-                {%for row in range(5) %}
-                {% for col in range(5) %}
+                <table>
+                    <tr>
+                        <td style="border: 1px solid #C0C0C0;">
+                            ПН
+                        </td>
+                        <td style="border: 1px solid #C0C0C0;">
+                            ВТ
+                        </td>
+                        <td style="border: 1px solid #C0C0C0;">
+                            СР
+                        </td>
+                        <td style="border: 1px solid #C0C0C0;">
+                            ЧТ
+                        </td>
+                        <td style="border: 1px solid #C0C0C0;">
+                            ПТ
+                        </td>
+                    </tr>
+                    {%for row in range(5) %}
+                    {% for col in range(5) %}
 
-                <td class="td" id="{{(row+1)|string + (col+1)|string}}">
+                    <td class="td" id="{{(row+1)|string + (col+1)|string}}">
 
-                </td>
-                {% endfor %}
-                <tr></tr>
-                {% endfor %}
-            </table>
-          </div id="t1">
+                    </td>
+                    {% endfor %}
+                    <tr></tr>
+                    {% endfor %}
+                </table>
+            </div>
         </td>
         <td>
             <select name="teacher_select" size="15" multiple="multiple">
-                {% if groups %}
+                {% if teachers %}
                 {% for teacher in teachers %}
                 <option style="width: 120px;"
                         onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">

@@ -216,21 +216,36 @@ def index():
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
                                                                           Schedule.teacher_id == Teachers.id,
                                                                           Schedule.lesson_id == Lessons.id).all()
-    teachers = Teachers.query.all()
-    groups = Groups.query.all()
+    # teachers = Teachers.query.all()
+    # groups = Groups.query.all()
+    # lessons = Lessons.query.all()
 
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
 
-    res = [[],[],[],[]]
+    res = [[], [], [], []]
+    groups = []
+    teachers = []
+    lessons = []
+
+    for group in Groups.query.all():
+        groups.append({'id': group.id, 'group_name': group.group_name})
+
+    for teacher in Teachers.query.all():
+        teachers.append({'id': teacher.id, 'teacher_name': teacher.teacher_name})
+
+    for lesson in Lessons.query.all():
+        lessons.append({'id': lesson.id, 'lesson_name': lesson.lesson_name})
+
     for sh, gr, te, le in result:
         res[0].append({'day_week': sh.day_week, 'pair': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom})
         res[1].append({'group_name': gr.group_name})
         res[2].append({'teacher_name': te.teacher_name})
         res[3].append({'lesson_name': le.lesson_name})
 
-    #flash(res)
+    # flash(res)
     return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
-                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test=res)
+                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test=res,
+                           lessons=lessons)
 
 
 def md5(text):
