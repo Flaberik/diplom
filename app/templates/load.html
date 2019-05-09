@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    load = {{result|safe}};
+    teachers = {{teachers|safe}}
+    lessons = {{lessons|safe}}
+    
+    function f() {
+        console.log('hello');
+    }
+
+    function filling_tables(for_table) {
+        table = ''
+        if (for_table == 'id') {
+            table = document.getElementById('table_id');
+            table.innerHTML = '<tr><td style="height: 94px;">ID</td></tr>';
+            for (var i = 0; i < load.length; i++) {
+                table.innerHTML += '<tr><td>' + load[i].id + '</td></tr>';
+            }
+        } else if (for_table == 'group') {
+            table = document.getElementById('table_group');
+            table.innerHTML = '<tr><td style="height: 95px;">Группа</td></tr>';
+            for (var i = 0; i < load.length; i++) {
+                table.innerHTML += '<tr><td>' + load[i].group_name + '</td></tr>';
+            }
+        } else if(for_table == 'lesson'){
+            table = document.getElementById('table_lesson');
+            table.innerHTML = '<td style="height: 94px;">Наименование дисциплины</td>';
+            for (var i = 0; i < load.length; i++) {
+                table.innerHTML += '<tr><td>' + load[i].lesson_name + '</td></tr>';
+            }
+        }
+
+        return table;
+    }
+</script>
+<style>
+    table {
+        margin: 0 auto;
+
+    }
+
+    th {
+        text-align: center;
+        border: 1px solid #C0C0C0;
+    }
+
+    td {
+
+        padding: 2px;
+        border: 1px solid #C0C0C0;
+    }
+
+    tr {
+
+        align: center;
+        text-align: center;
+    }
+
+</style>
+
+<form action="" method="post" name="theForm">
+
+</form>
+
+<center>
+    <table style="float: left;" id="table_id">
+        <tr>
+            <td style="height: 95px;">ID</td>
+        </tr>
+        <tr>
+            <td>
+                0
+            </td>
+        </tr>
+    </table>
+    <table style="float: left;" id="table_group">
+        <tr><td style="height: 95px;">Группа</td></tr>
+        <tr>
+            <td>
+
+            </td>
+        </tr>
+    </table>
+    <table style="float: left;" id="table_lesson">
+        <tr>
+            <td style="height: 94px;">Наименование дисциплины</td>
+        </tr>
+        <tr>
+            <td>ISRPO</td>
+        </tr>
+    </table>
+
+    <table>
+        <table>
+            <tr>
+                <td style="width: 1000px;">I Семестр</td>
+            </tr>
+            <tr>
+                <table>
+                    <tr>
+                        <td>
+                            недель
+                        </td>
+                        <td>
+                            акад. часов в неделю
+                        </td>
+                        <td>
+                            акад. часов в семестр
+                        </td>
+                        <td>
+                            курс. проект
+                        </td>
+                        <td>
+                            лаб.-прак. работы
+                        </td>
+                        <td>
+                            самост. работа
+                        </td>
+                        <td>
+                            экзамены
+                        </td>
+                        <td>
+                            консультации
+                        </td>
+                        <td>
+                            всего за семестр
+                        </td>
+                    </tr>
+                </table>
+            </tr>
+        </table>
+    </table>
+</center>
+{% endblock %}

@@ -33,9 +33,8 @@ def login():
 
 
 # ---------------------------------------------------------------------#
-@app.route('/t', methods=['GET', 'POST'])
-def test():
-    form = TeacherForm()
+
+def test(form):
     if form.validate_on_submit():
         group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
         teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
@@ -44,7 +43,6 @@ def test():
         hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']))
         sch = Schedule.query.filter_by(hash_sum=hash).first()
         if sch is None:
-            flash('None')
             schedule = Schedule(group_id=group_id,
                                 teacher_id=teacher_id,
                                 lesson_id=lesson_id,
@@ -53,23 +51,9 @@ def test():
             db.session.add(schedule)
             db.session.commit()
         else:
-            flash('not none')
             db.session.query(Schedule).filter_by(hash_sum=hash).update(
                 {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
             db.session.commit()
-
-    result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
-                                                                          Schedule.teacher_id == Teachers.id,
-                                                                          Schedule.lesson_id == Lessons.id).all()
-    # flash(result[0])
-    # for s, g, t, l in result:
-    # flash("{} {} {} {}".format(s.id, g.group_name, t.teacher_name, l.lesson_name))
-
-    teachers = Teachers.query.all()
-    groups = Groups.query.all()
-    lessons = Lessons.query.all()
-    return render_template('add_schedule.html', title='Schedule', form=form, teachers=teachers, groups=groups,
-                           lessons=lessons)
 
 
 # ---------------------------------------------------------------------#
@@ -209,32 +193,24 @@ def signin():
 
 
 # ---------------------------------------------------------------------#
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     user = g.user
+    form = FlaskForm()
+    try:
+        test(form)
+    except:
+        pass
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
                                                                           Schedule.teacher_id == Teachers.id,
                                                                           Schedule.lesson_id == Lessons.id).all()
     # teachers = Teachers.query.all()
     # groups = Groups.query.all()
     # lessons = Lessons.query.all()
-
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
 
     res = [[], [], [], []]
-    groups = []
-    teachers = []
-    lessons = []
-
-    for group in Groups.query.all():
-        groups.append({'id': group.id, 'group_name': group.group_name})
-
-    for teacher in Teachers.query.all():
-        teachers.append({'id': teacher.id, 'teacher_name': teacher.teacher_name})
-
-    for lesson in Lessons.query.all():
-        lessons.append({'id': lesson.id, 'lesson_name': lesson.lesson_name})
 
     for sh, gr, te, le in result:
         res[0].append({'day_week': sh.day_week, 'pair': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom})
@@ -242,10 +218,48 @@ def index():
         res[2].append({'teacher_name': te.teacher_name})
         res[3].append({'lesson_name': le.lesson_name})
 
-    # flash(res)
-    return render_template("index.html", title="Главная", user=user, form=FlaskForm(),
-                           teachers=teachers, groups=groups, days_enum=days_enum, result=result, test=res,
-                           lessons=lessons)
+    return render_template("index.html", title="Главная", user=user, form=form,
+                           teachers=get_teachers(), groups=get_groups(), days_enum=days_enum, result=result, test=res,
+                           lessons=get_lessons())
+
+
+@app.route('/l', methods=['GET', 'POST'])
+def load_page():
+    result = []
+
+    for lo, gr, te, le in db.session.query(Load, Groups, Teachers, Lessons).filter(Load.group_id == Groups.id,
+                                                                                   Load.teacher_id == Teachers.id,
+                                                                                   Load.lesson_id == Lessons.id).all():
+        result.append(
+            {'id': lo.id, 'group_name': gr.group_name, 'lesson_name': le.lesson_name, 'teacher_name': te.teacher_name,
+             'weeks': lo.weeks, 'academic_hours_week': lo.academic_hours_week,
+             'academic_hours_term': lo.academic_hours_term, 'courseworks': lo.courseworks,
+             'lab_works': lo.lab_works, 'ind_works': lo.ind_works, 'exams': lo.exams, 'advice': lo.advice,
+             'total_hours': lo.total_hours, 'term': lo.term})
+
+    return render_template("load.html", result=result, teachers=get_teachers(), lessons=get_lessons(),
+                           groups=get_groups())
+
+
+def get_groups():
+    groups = []
+    for group in Groups.query.all():
+        groups.append({'id': group.id, 'group_name': group.group_name})
+    return groups
+
+
+def get_lessons():
+    lessons = []
+    for lesson in Lessons.query.all():
+        lessons.append({'id': lesson.id, 'lesson_name': lesson.lesson_name})
+    return lessons
+
+
+def get_teachers():
+    teachers = []
+    for teacher in Teachers.query.all():
+        teachers.append({'id': teacher.id, 'teacher_name': teacher.teacher_name})
+    return teachers
 
 
 def md5(text):
