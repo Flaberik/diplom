@@ -1,136 +1,281 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{title}}</title>
 
-{% block content %}
-<script>
-    load = {{result|safe}};
-    teachers = {{teachers|safe}}
-    lessons = {{lessons|safe}}
-    
-    function f() {
-        console.log('hello');
-    }
+    <script>
+        load = {{result|safe}};
+        teachers = {{teachers|safe}};
+        lessons = {{lessons|safe}};
 
-    function filling_tables(for_table) {
-        table = ''
-        if (for_table == 'id') {
-            table = document.getElementById('table_id');
-            table.innerHTML = '<tr><td style="height: 94px;">ID</td></tr>';
-            for (var i = 0; i < load.length; i++) {
-                table.innerHTML += '<tr><td>' + load[i].id + '</td></tr>';
-            }
-        } else if (for_table == 'group') {
-            table = document.getElementById('table_group');
-            table.innerHTML = '<tr><td style="height: 95px;">Группа</td></tr>';
-            for (var i = 0; i < load.length; i++) {
-                table.innerHTML += '<tr><td>' + load[i].group_name + '</td></tr>';
-            }
-        } else if(for_table == 'lesson'){
-            table = document.getElementById('table_lesson');
-            table.innerHTML = '<td style="height: 94px;">Наименование дисциплины</td>';
-            for (var i = 0; i < load.length; i++) {
-                table.innerHTML += '<tr><td>' + load[i].lesson_name + '</td></tr>';
-            }
+
+        function f(doc, id) {
+            console.log(doc.innerHTML+ ' ' + id);
+
         }
 
-        return table;
-    }
-</script>
-<style>
-    table {
-        margin: 0 auto;
 
-    }
+        function filling_table() {
+            div = document.getElementById('table_d');
+            div.innerHTML = '' +
+                '    <tr>\n' +
+                '        <td rowspan="2">Группа</td>\n' +
+                '        <td rowspan="2">Преподаватель</td>\n' +
+                '        <td rowspan="2">Наименование дисциплины</td>\n' +
+                '        <td colspan="9">I Семестр</td>\n' +
+                '    </tr>\n' +
+                '    <tr>\n' +
+                '        <td><div>недель</div></td>\n' +
+                '        <td><div>акад. часов в неделю</div></td>\n' +
+                '        <td><div>акад. часов в семестр</div></td>\n' +
+                '        <td><div>курс. проект</div></td>\n' +
+                '        <td><div>лаб.-прак. работы</div></td>\n' +
+                '        <td><div>самост. работа</div></td>\n' +
+                '        <td><div>экзамены</div></td>\n' +
+                '        <td><div>консультации</div></td>\n' +
+                '        <td><div>всего за семестр</div></td>\n' +
+                '    </tr>';
+            for (var i = 0; i < load.length; i++) {
+                div.innerHTML +=
+                    '<tr>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].group_name + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].group_name + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].lesson_name + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].weeks + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].academic_hours_week + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].academic_hours_term + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].courseworks + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].lab_works + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].ind_works + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].exams + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].advice + '</div></td>\n' +
+                    '   <td><div onclick="f(this, ' + i + ')">' + load[i].total_hours + '</div></td>\n' +
+                    '</tr>';
+            }
 
-    th {
-        text-align: center;
-        border: 1px solid #C0C0C0;
-    }
+        }
 
-    td {
+    </script>
+    <style>
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            line-height: 1.1;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        }
 
-        padding: 2px;
-        border: 1px solid #C0C0C0;
-    }
+        th {
+            text-align: center;
+            border: 1px solid #C0C0C0;
+        }
 
-    tr {
+        td {
 
-        align: center;
-        text-align: center;
-    }
+            border: 1px solid #C0C0C0;
+        }
 
-</style>
+        tr {
 
-<form action="" method="post" name="theForm">
+            align: center;
+            text-align: center;
+        }
 
-</form>
+        .table1{}
+        .td1{}
+        .tr1{}
+
+
+
+        th {
+            padding: 10px;
+            border: 1px solid #C0C0C0;
+        }
+
+        td {
+            font-size: 0.8em;
+            padding: 5px 7px;
+            border: 1px solid #C0C0C0;
+        }
+
+        td {
+            border-collapse: collapse;
+            border: 1px black solid;
+        }
+
+
+    </style>
+{% extends "base.html" %}
+</head>
+<body>
+
+{% block content %}
 
 <center>
-    <table style="float: left;" id="table_id">
-        <tr>
-            <td style="height: 95px;">ID</td>
-        </tr>
-        <tr>
-            <td>
-                0
-            </td>
-        </tr>
-    </table>
-    <table style="float: left;" id="table_group">
-        <tr><td style="height: 95px;">Группа</td></tr>
-        <tr>
-            <td>
-
-            </td>
-        </tr>
-    </table>
-    <table style="float: left;" id="table_lesson">
-        <tr>
-            <td style="height: 94px;">Наименование дисциплины</td>
-        </tr>
-        <tr>
-            <td>ISRPO</td>
-        </tr>
-    </table>
-
-    <table>
-        <table>
-            <tr>
-                <td style="width: 1000px;">I Семестр</td>
-            </tr>
-            <tr>
-                <table>
-                    <tr>
-                        <td>
-                            недель
-                        </td>
-                        <td>
-                            акад. часов в неделю
-                        </td>
-                        <td>
-                            акад. часов в семестр
-                        </td>
-                        <td>
-                            курс. проект
-                        </td>
-                        <td>
-                            лаб.-прак. работы
-                        </td>
-                        <td>
-                            самост. работа
-                        </td>
-                        <td>
-                            экзамены
-                        </td>
-                        <td>
-                            консультации
-                        </td>
-                        <td>
-                            всего за семестр
-                        </td>
-                    </tr>
-                </table>
-            </tr>
-        </table>
-    </table>
+    <button>Добавить</button><button>Сортировка</button>
 </center>
+
+<br>
+<form action="" method="post" id="myForm" >
+    {{ form.hidden_tag() }}
+    <table style="width: 100%;">
+        <tr>
+            <td>Группа</td>
+            <td>Преподаватель</td>
+            <td>Дисциплина</td>
+            <td>Семестр</td>
+            <td>недель</td>
+            <td>акад. часов в неделю</td>
+            <td>акад. часов в семестр</td>
+        </tr>
+        <tr>
+            <td>
+                <select name="group_select" style="width: 60px;">
+                    {% for group in groups %}
+                    <option>
+                        {{group.group_name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="teacher_select" style="width: 60px;">
+                    {% for teacher in teachers %}
+                    <option>
+                        {{teacher.teacher_name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="lesson_select" style="width: 60px;">
+                    {% for lesson in lessons %}
+                    <option>
+                        {{lesson.lesson_name}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="term_select" style="width: 60px;">
+                    <option>I Семестр</option>
+                    <option>II Семестр</option>
+                </select>
+            </td>
+            <td><input type="number" name="weeks" style="width: 55px;"></td>
+            <td><input type="number" name="academic_hours_week" style="width: 55px;"></td>
+            <td><input type="number" name="academic_hours_term" style="width: 55px;"></td>
+        </tr>
+        <tr>
+            <td>курс. проект</td>
+            <td>лаб.-прак. работы</td>
+            <td>самост. работа</td>
+            <td>экзамены</td>
+            <td>консультации</td>
+            <td>всего за семестр</td>
+            <td>
+                <div onclick="f1()" name="submit" value="add">submit</div>
+            </td>
+        </tr>
+        <tr>
+
+            <td><input type="number" name="courseworks" style="width: 55px;"></td>
+            <td><input type="number" name="lab_works" style="width: 55px;"></td>
+
+            <td><input type="number" name="ind_works" style="width: 55px;"></td>
+            <td><input type="number" name="exams" style="width: 55px;"></td>
+            <td><input type="number" name="advice" style="width: 55px;"></td>
+            <td><input type="number" name="total_hours" style="width: 55px;"></td>
+        </tr>
+    </table>
+</form>
+<script>
+    function f1() {
+        console.log(document.getElementsByName('weeks').value);
+        if (document.getElementsByName('weeks').value != '' && document.getElementsByName('academic_hours_week').value != '' &&
+            document.getElementsByName('academic_hours_term').value != '' && document.getElementsByName('courseworks').value != '' &&
+            document.getElementsByName('lab_works').value != '' && document.getElementsByName('ind_works').value != '' &&
+            document.getElementsByName('exams').value != '' && document.getElementsByName('advice').value != '' && document.getElementsByName('total_hours').value != ''){
+            document.getElementById('myForm').submit();
+        }else
+            alert('Одно из полей оказалось пустым');
+
+        console.log();
+
+    }
+</script>
+<br>
+
+<table id="table_d" cellpadding="0" cellspacing="0" align="center">
+    <tr>
+        <td rowspan="2">Группа</td>
+        <td rowspan="2">Преподаватель</td>
+        <td rowspan="2">Наименование дисциплины</td>
+        <td colspan="9">I Семестр</td>
+    </tr>
+    <tr>
+        <td><div>недель</div></td>
+        <td><div>акад. часов в неделю</div></td>
+        <td><div>акад. часов в семестр</div></td>
+        <td><div>курс. проект</div></td>
+        <td><div>лаб.-прак. работы</div></td>
+        <td><div>самост. работа</div></td>
+        <td><div>экзамены</div></td>
+        <td><div>консультации</div></td>
+        <td><div>всего за семестр</div></td>
+    </tr>
+
+    <tr>
+        <td>
+            <select name="group_select" style="width: 60px;">
+                {% for group in groups %}
+                <option>
+                    {{group.group_name}}
+                </option>
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            <select name="teacher_select" style="width: 60px;">
+                {% for teacher in teachers %}
+                <option>
+                    {{teacher.teacher_name}}
+                </option>
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            <select name="lesson_select" style="width: 60px;">
+                {% for lesson in lessons %}
+                <option>
+                    {{lesson.lesson_name}}
+                </option>
+                {% endfor %}
+            </select>
+        </td>
+
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+        <td><input type="number" style="width: 55px;"></td>
+    </tr>
+
+</table>
+<br><br>
+
+<script>filling_table()</script>
 {% endblock %}
+
+</body>
+</html>
+

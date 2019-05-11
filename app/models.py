@@ -89,7 +89,7 @@ class Load(db.Model):
     exams = db.Column(db.Integer, index=True)
     advice = db.Column(db.Integer, index=True)
     total_hours = db.Column(db.Float, index=True)
-    term = db.Column(db.Integer, index=True)
+    term = db.Column(db.String(20), index=True)
 
     def __repr__(self):
         return '<load %r>' % (self.id)

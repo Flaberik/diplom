@@ -226,6 +226,20 @@ def index():
 @app.route('/l', methods=['GET', 'POST'])
 def load_page():
     result = []
+    form = FlaskForm()
+
+    if (form.validate_on_submit()):
+        group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
+        teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
+        lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
+        load = Load(group_id=group_id, lesson_id=lesson_id, teacher_id=teacher_id, weeks=request.form['weeks'],
+                    academic_hours_week=request.form['academic_hours_week'],
+                    academic_hours_term=request.form['academic_hours_term'],
+                    courseworks=request.form['courseworks'], lab_works=request.form['lab_works'],
+                    ind_works=request.form['ind_works'], exams=request.form['exams'], advice=request.form['advice'],
+                    total_hours=request.form['total_hours'], term=request.form['term_select'])
+        db.session.add(load)
+        db.session.commit()
 
     for lo, gr, te, le in db.session.query(Load, Groups, Teachers, Lessons).filter(Load.group_id == Groups.id,
                                                                                    Load.teacher_id == Teachers.id,
@@ -237,7 +251,8 @@ def load_page():
              'lab_works': lo.lab_works, 'ind_works': lo.ind_works, 'exams': lo.exams, 'advice': lo.advice,
              'total_hours': lo.total_hours, 'term': lo.term})
 
-    return render_template("load.html", result=result, teachers=get_teachers(), lessons=get_lessons(),
+    return render_template("load.html", form=form, title='Нагрузка', result=result, teachers=get_teachers(),
+                           lessons=get_lessons(),
                            groups=get_groups())
 
 
