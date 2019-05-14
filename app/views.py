@@ -144,12 +144,8 @@ def teacher():
                 except:
                     db.session.rollback()
 
-    teachers = Teachers.query.all()
-    groups = Groups.query.all()
-    lessons = Lessons.query.all()
-
-    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=teachers,
-                           groups=groups, lessons=lessons)
+    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=get_teachers(),
+                           groups=get_groups(), lessons=get_lessons())
 
 
 # ---------------------------------------------------------------------#

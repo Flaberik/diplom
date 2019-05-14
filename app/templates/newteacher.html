@@ -1,90 +1,139 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+
+    <style type="text/css">
+        .tabs {
+            width: 100%;
+            padding: 0px;
+            margin: 0 auto;
+        }
+
+        .tabs > input {
+            display: none;
+        }
+
+        .tabs > div {
+            display: none;
+            padding: 12px;
+            border: 1px solid #C0C0C0;
+        }
+
+        .tabs > label {
+            display: inline-block;
+            padding: 7px;
+            margin: 0 -5px -1px 0;
+            text-align: center;
+            color: #666666;
+            border: 1px solid #C0C0C0;
+            background: #E0E0E0;
+            cursor: pointer;
+        }
+
+        .tabs > input:checked + label {
+            color: #000000;
+            border: 1px solid #C0C0C0;
+            border-bottom: 1px solid #FFFFFF;
+            background: #FFFFFF;
+        }
+
+        #tab_1:checked ~ #teachers,
+        #tab_2:checked ~ #groups,
+        #tab_3:checked ~ #lessons {
+            display: block;
+        }
+
+        /* внешние границы таблицы серого цвета толщиной 1px */
+        table {
+            margin: 0 auto;
+            border: 1px solid #C0C0C0;
+        }
+
+        /* границы ячеек первого ряда таблицы */
+        th {
+            text-align: center;
+            border: 1px solid #C0C0C0;
+        }
+
+        /* границы ячеек тела таблицы */
+        td {
+            padding: 2px;
+            margin: 0 auto;
+            border: 1px solid #C0C0C0;
+        }
+
+        tr {
+            vertical-align: top;
+            align: center;
+            text-align: center;
+            border: 1px solid #C0C0C0;
+        }
+
+        .tb {
+            border: 1px solid #C0C0C0;
+        }
+
+        .tr {
+            border: 1px solid #C0C0C0;
+        }
+
+        .th {
+            border: 1px solid #C0C0C0;
+        }
+
+        .td {
+            border: 1px solid #C0C0C0;
+        }
+
+    </style>
+    <script>
+        var lessons = {{lessons|safe}};
+        function add_t() {
+            data = document.getElementById('data_d');
+            data.innerHTML = '<table>' +
+                '<tr><td colspan="3"><input type="text" name="add_teacher" value="" placeholder="ФИО Преподавателя" style="width: 270px;"></td></tr>' +
+                '    <tr>\n' +
+                '        <td>\n' +
+                create_select_lesson()+
+                '        </td>\n' +
+                '        <td><br><input type="button" value=">>" onclick="move_right()">\n' +
+                '            <p></p><input type="button" value="<<" onclick="move_left()"></td>\n' +
+                '        <td><select name="select_lesson_right" size="7" style="width: 160px;">\n' +
+                '        </select></td>\n' +
+                '    </tr>' +
+                '<tr><td colspan="3"><input type="button" value="Добавить"></td></tr>' +
+                '</table>';
+        }
+
+        function create_select_lesson() {
+            select_lesson = '    <select name="select_lesson_left" size="7" style="width: 160px;">';
+            for (var i = 0; i < lessons.length; i++) {
+                select_lesson += '<option>'+lessons[i].lesson_name+'</option>';
+            }
+            return select_lesson + '</select>';
+        }
+        
+        function move_right() {
+            select = document.getElementsByName('select_lesson_left');
+            for (var i = 0; i < 0; i++) {
+                
+            }
+        }
+        
+        function move_left() {
+            
+        }
+    </script>
+    {% extends "base.html" %}
+</head>
+<body>
+
 {% block content %}
 
-<style type="text/css">
-    .tabs {
-        width: 100%;
-        padding: 0px;
-        margin: 0 auto;
-    }
-
-    .tabs > input {
-        display: none;
-    }
-
-    .tabs > div {
-        display: none;
-        padding: 12px;
-        border: 1px solid #C0C0C0;
-    }
-
-    .tabs > label {
-        display: inline-block;
-        padding: 7px;
-        margin: 0 -5px -1px 0;
-        text-align: center;
-        color: #666666;
-        border: 1px solid #C0C0C0;
-        background: #E0E0E0;
-        cursor: pointer;
-    }
-
-    .tabs > input:checked + label {
-        color: #000000;
-        border: 1px solid #C0C0C0;
-        border-bottom: 1px solid #FFFFFF;
-        background: #FFFFFF;
-    }
-
-    #tab_1:checked ~ #teachers,
-    #tab_2:checked ~ #groups,
-    #tab_3:checked ~ #lessons {
-        display: block;
-    }
-
-
-    /* внешние границы таблицы серого цвета толщиной 1px */
-    table {
-        margin: 0 auto;
-    }
-
-    /* границы ячеек первого ряда таблицы */
-    th {
-        text-align: center;
-    }
-
-    /* границы ячеек тела таблицы */
-    td {
-        padding: 2px;
-        margin: 0 auto;
-    }
-
-    tr {
-        vertical-align: top;
-        align: center;
-        text-align: center;
-    }
-
-    .tb {
-        border: 1px solid #C0C0C0;
-    }
-
-    .tr {
-        border: 1px solid #C0C0C0;
-    }
-
-    .th {
-        border: 1px solid #C0C0C0;
-    }
-
-    .td {
-        border: 1px solid #C0C0C0;
-    }
-
-</style>
-
 <center>
-    <p>Преподаватели</p>
+    <p></p>
     <form action="" method="post" name="teacher">
         {{ form.hidden_tag() }}
         <div class="tabs">
@@ -105,6 +154,14 @@
             {% endif %}
 
             <div id="teachers">
+                <input type="button" value="Добавить" onclick="add_t()">
+                <input type="button" value="Редактировать">
+                <input type="button" value="Удалить">
+                <br><br>
+                <div id="data_d">
+
+                </div>
+                <!--
                 <table class="tb">
                     <tr class="tr">
                         <th class="th">
@@ -122,8 +179,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="text" name="add_teacher" value=""
-                                               placeholder="ФИО Преподавателя" style="width: 250px;">
+                                        <input type="text" name="add_teacher" value="" placeholder="ФИО Преподавателя" style="width: 250px;">
                                     </td>
                                 </tr>
                                 <tr>
@@ -184,7 +240,7 @@
 
                     </tr>
                 </table>
-
+            -->
             </div>
             <div id="groups">
                 <table class="tb">
@@ -313,7 +369,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input type="text" name="new_lesson_name" value="" placeholder="Новое наименование"
+                                        <input type="text" name="new_lesson_name" value=""
+                                               placeholder="Новое наименование"
                                                style="width: 250px;">
                                     </td>
                                 </tr>
@@ -352,18 +409,28 @@
     </form>
 </center>
 
-<div>
-    <p>Выберите вариант</p>
-    <select name="form_select" size="5" multiple="multiple">
-        <option class="plit1" value="select2">Первый вариант</option>
-        <option class="plit2" value="Значение 2">Второй вариант</option>
-        <option value="Значение 3">Третий вариант</option>
-        <option value="Значение 4">Четвертый вариант</option>
-        <option value="Значение 5">Пятый вариант</option>
-        <option value="Значение 6">Шестой вариант</option>
-    </select>
-</div>
-<input type="submit" value="Отправить">
+<table>
+    <tr>
+        <td>
+            <select name="form_select" size="7" style="width: 160px;">
+                <option value="select2">Первый вариант</option>
+                <option value="Значение 2">Второй вариант</option>
+                <option value="Значение 3">Третий вариант</option>
+                <option value="Значение 4">Четвертый вариант</option>
+                <option value="Значение 5">Пятый вариант</option>
+                <option value="Значение 6">Шестой вариант</option>
+            </select>
+        </td>
+        <td><br><input type="button" value=">>">
+            <p></p><input type="button" value="<<"></td>
+        <td><select name="form_select" size="7" style="width: 160px;">
+
+        </select></td>
+    </tr>
+</table>
+
 
 
 {% endblock %}
+</body>
+</html>

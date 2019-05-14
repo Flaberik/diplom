@@ -318,7 +318,7 @@
         </tr>
         <td>
 
-            <select name="group_select" size="15" multiple="multiple">
+            <select name="group_select" size="15" >
                 {% for group in groups %}
                 <option style="width: 120px;"
                         onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
@@ -360,7 +360,7 @@
             </div>
         </td>
         <td>
-            <select name="teacher_select" size="15" multiple="multiple">
+            <select name="teacher_select" size="15">
                 {% if teachers %}
                 {% for teacher in teachers %}
                 <option style="width: 120px;"
