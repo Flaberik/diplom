@@ -22,9 +22,6 @@
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
 
         function create_select(select_for, value) {
-/*            console.log(value.teacher_name);
-            console.log(value.lesson_name);
-            console.log(value.group_name);*/
 
             if (select_for == 'teachers') {
                 select_teacher = '<select name="teacher_select" style="width: 250px;"><option></option>';
@@ -40,7 +37,7 @@
                 select_lesson = '<select name="lesson_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < lessons.length; i++) {
                     if (lessons[i].lesson_name == value.lesson_name) {
-                        select_lesson += '<option>' + lessons[i].lesson_name + '</option>';
+                        select_lesson += '<option selected>' + lessons[i].lesson_name + '</option>';
                     } else {
                         select_lesson += '<option>' + lessons[i].lesson_name + '</option>'
                     }
@@ -84,7 +81,7 @@
 
         function func1(id) {
             var myD = document.getElementById(id);
-            console.log(id);
+
             var newForm = document.getElementById('newForm');
             var value = myD.value;
 
@@ -167,7 +164,7 @@
                 '                    </tr>\n' +
                 '                    <tr>\n' +
                 '                        <td>\n' +
-                '                            <input type="checkbox" name="che" value=""> Подмена\n' +
+                '                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
                 '                        </td>\n' +
                 '                    </tr>\n' +
                 '                </table>\n' +
@@ -183,20 +180,20 @@
 
         }
 
-        function select(result, days_enum, group_name, teacher_name) {
-
+        function select_(days_enum, group_name, teacher_name) {
             clear_tabel();
+
             for (var i = 0; i < result[0].length; i++) {
                 if (group_name.length > 1)
                     if (result[1][i].group_name == group_name) {
                         value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
-                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value);
                     }
 
                 if (teacher_name.length > 1)
                     if (result[2][i].teacher_name == teacher_name) {
                         value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
-                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value);
                     }
             }
         }
@@ -206,6 +203,7 @@
 /*            console.log(value);
             console.log(id);*/
             myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+
 
             create_new_div(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
@@ -229,14 +227,15 @@
             }
         }
 
-        function func(group,teacher,lesson,num_room,day_week,pair){
+        function func(group,teacher,lesson,num_room,day_week,pair,denom){
             value = {
                 'group_name': group,
                 'teacher_name': teacher,
                 'lesson_name': lesson,
                 'num_room': num_room,
                 'day_week': day_week,
-                'pair': pair
+                'pair': pair,
+                'denom': denom
             };
             return value;
         }
@@ -318,10 +317,9 @@
         </tr>
         <td>
 
-            <select name="group_select" size="15" multiple="multiple">
+            <select name="group_select" size="15">
                 {% for group in groups %}
-                <option style="width: 120px;"
-                        onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
+                <option style="width: 120px;" onclick="select_({{days_enum|safe}}, '{{group.group_name|safe}}', ' ')">
                     {{group.group_name}}
                 </option>
                 {% endfor %}
@@ -360,11 +358,10 @@
             </div>
         </td>
         <td>
-            <select name="teacher_select" size="15" multiple="multiple">
+            <select name="teacher_select" size="15">
                 {% if teachers %}
                 {% for teacher in teachers %}
-                <option style="width: 120px;"
-                        onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">
+                <option style="width: 120px;" onclick="select_({{days_enum|safe}},' ' , '{{teacher.teacher_name|safe}}')">
                     {{teacher.teacher_name}}
                 </option>
                 {% endfor %}

@@ -39,15 +39,17 @@ def test(form):
         group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
         teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
         lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
-
-        hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']))
+        denom = 0
+        if(request.form['denom'] == '1'):
+            denom = 1
+        hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']) + str(denom))
         sch = Schedule.query.filter_by(hash_sum=hash).first()
         if sch is None:
             schedule = Schedule(group_id=group_id,
                                 teacher_id=teacher_id,
                                 lesson_id=lesson_id,
                                 num_room=request.form['num_room'], day_week=request.form['day_select'],
-                                pair=request.form['pair_select'], hash_sum=hash)
+                                pair=request.form['pair_select'], hash_sum=hash, denom=denom)
             db.session.add(schedule)
             db.session.commit()
         else:
@@ -87,6 +89,7 @@ def teacher():
                 # return render_template('newteacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
             elif submit == 'Удалить':
                 try:
+                    db.session.query(Schedule).filter_by(teacher_id=Teachers.query.filter_by(teacher_name=request.form['del_teacher_select']).first().id).delete()
                     db.session.query(Teachers).filter_by(teacher_name=request.form['del_teacher_select']).delete()
                     db.session.commit()
                 except:
@@ -113,6 +116,7 @@ def teacher():
 
             elif submit == 'Удалить':
                 try:
+                    db.session.query(Schedule).filter_by(group_id=Groups.query.filter_by(group_name=request.form['del_group_select']).first().id).delete()
                     db.session.query(Groups).filter_by(group_name=request.form['del_group_select']).delete()
                     db.session.commit()
                 except:
@@ -138,18 +142,17 @@ def teacher():
                     db.session.rollback()
 
             elif submit == 'Удалить':
+
                 try:
+                    db.session.query(Schedule).filter_by(lesson_id=Lessons.query.filter_by(lesson_name=request.form['del_lesson_select']).first().id).delete()
                     db.session.query(Lessons).filter_by(lesson_name=request.form['del_lesson_select']).delete()
                     db.session.commit()
                 except:
                     db.session.rollback()
 
-    teachers = Teachers.query.all()
-    groups = Groups.query.all()
-    lessons = Lessons.query.all()
 
-    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=teachers,
-                           groups=groups, lessons=lessons)
+    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=get_teachers(),
+                           groups=get_groups(), lessons=get_lessons())
 
 
 # ---------------------------------------------------------------------#
