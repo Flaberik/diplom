@@ -87,6 +87,8 @@ def teacher():
                 # return render_template('newteacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
             elif submit == 'Удалить':
                 try:
+                    db.session.query(Schedule).filter_by(teacher_id=Teachers.query.filter_by(
+                        teacher_name=request.form['del_teacher_select']).first().id).delete()
                     db.session.query(Teachers).filter_by(teacher_name=request.form['del_teacher_select']).delete()
                     db.session.commit()
                 except:
@@ -113,6 +115,8 @@ def teacher():
 
             elif submit == 'Удалить':
                 try:
+                    db.session.query(Schedule).filter_by(group_id=Groups.query.filter_by(
+                        group_name=request.form['del_group_select']).first().id).delete()
                     db.session.query(Groups).filter_by(group_name=request.form['del_group_select']).delete()
                     db.session.commit()
                 except:
@@ -139,6 +143,8 @@ def teacher():
 
             elif submit == 'Удалить':
                 try:
+                    db.session.query(Schedule).filter_by(lesson_id=Lessons.query.filter_by(
+                        lesson_name=request.form['del_lesson_select']).first().id).delete()
                     db.session.query(Lessons).filter_by(lesson_name=request.form['del_lesson_select']).delete()
                     db.session.commit()
                 except:

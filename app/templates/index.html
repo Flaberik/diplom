@@ -189,25 +189,24 @@
             for (var i = 0; i < result[0].length; i++) {
                 if (group_name.length > 1)
                     if (result[1][i].group_name == group_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
+                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
                         fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
                     }
 
                 if (teacher_name.length > 1)
                     if (result[2][i].teacher_name == teacher_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
+                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
                         fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
                     }
+                console.log(result[0][i].denom)
             }
         }
 
         function fill_div(par1, par2, par3, id, value) {
-            var myD = document.getElementById(id);
-/*            console.log(value);
-            console.log(id);*/
+            var myD = document.getElementById(id+'_up');
             myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
 
-            create_new_div(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
+            create_new_table(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
 
         function printInfo(ele) {
@@ -222,26 +221,30 @@
         function clear_tabel() {
             for (var i = 1; i <= 5; i++) {
                 for (var j = 1; j <= 5; j++) {
-                    var myD = document.getElementById(String(j) + String(i));
-                    myD.innerHTML = '';
-                    create_new_div((String(j) + String(i)), myD, '<br><br><br><br>', func('','','','',days[j],i));
+                    var down = document.getElementById(String(j) + String(i)+'_down');
+                    var up = document.getElementById(String(j) + String(i)+'_up');
+                    down.innerHTML = '';
+                    up.innerHTML = '';
+                    //create_new_table((String(j) + String(i)), down, '', func('','','','',days[j],i));
+                    //create_new_table((String(j) + String(i)), up, '', func('','','','',days[j],i));
                 }
             }
         }
 
-        function func(group,teacher,lesson,num_room,day_week,pair){
+        function func(group,teacher,lesson,num_room,day_week,pair,denom){
             value = {
                 'group_name': group,
                 'teacher_name': teacher,
                 'lesson_name': lesson,
                 'num_room': num_room,
                 'day_week': day_week,
-                'pair': pair
+                'pair': pair,
+                'denom': denom
             };
             return value;
         }
 
-        function create_new_div(id, parent, text, value) {
+        function create_new_table(id, parent, text, value) {
             var newD = document.createElement("div");
             newD.innerHTML = text;
             newD.id = (id + "div");
@@ -273,7 +276,7 @@
 
     .td {
         width: 150px;
-        height: 100px;
+        height: 50px;
         border: 1px solid #C0C0C0;
     }
 
