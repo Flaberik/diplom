@@ -263,6 +263,7 @@ def get_groups():
     groups = []
     for group in Groups.query.all():
         groups.append({'id': group.id, 'group_name': group.group_name})
+
     return groups
 
 
