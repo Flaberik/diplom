@@ -45,14 +45,6 @@ class Groups(db.Model):
         return "'id': %r, 'group_name': %r" % (self.id, self.group_name)
         #return '<Group %r>' % (self.group_name)
 
-    def serialize(self, whatTo):
-        result = {}
-        if 'id' in whatTo:
-            result['id'] = self.id
-        if 'group_name' in whatTo:
-            result['date'] = str(self.group_name)
-        return result
-
     def as_dict(self):
        return {c.group_name: getattr(self, c.group_name) for c in self.__table__.columns}
 
