@@ -22,6 +22,9 @@
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
 
         function create_select(select_for, value) {
+/*            console.log(value.teacher_name);
+            console.log(value.lesson_name);
+            console.log(value.group_name);*/
 
             if (select_for == 'teachers') {
                 select_teacher = '<select name="teacher_select" style="width: 250px;"><option></option>';
@@ -37,7 +40,7 @@
                 select_lesson = '<select name="lesson_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < lessons.length; i++) {
                     if (lessons[i].lesson_name == value.lesson_name) {
-                        select_lesson += '<option selected>' + lessons[i].lesson_name + '</option>';
+                        select_lesson += '<option>' + lessons[i].lesson_name + '</option>';
                     } else {
                         select_lesson += '<option>' + lessons[i].lesson_name + '</option>'
                     }
@@ -81,7 +84,7 @@
 
         function func1(id) {
             var myD = document.getElementById(id);
-
+            console.log(id);
             var newForm = document.getElementById('newForm');
             var value = myD.value;
 
@@ -164,7 +167,7 @@
                 '                    </tr>\n' +
                 '                    <tr>\n' +
                 '                        <td>\n' +
-                '                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
+                '                            <input type="checkbox" name="che" value=""> Подмена\n' +
                 '                        </td>\n' +
                 '                    </tr>\n' +
                 '                </table>\n' +
@@ -180,32 +183,30 @@
 
         }
 
-        function select_(days_enum, group_name, teacher_name) {
-            clear_tabel();
+        function select(result, days_enum, group_name, teacher_name) {
 
+            clear_tabel();
             for (var i = 0; i < result[0].length; i++) {
                 if (group_name.length > 1)
                     if (result[1][i].group_name == group_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
-                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value);
+                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
+                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
                     }
 
                 if (teacher_name.length > 1)
                     if (result[2][i].teacher_name == teacher_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair);
-                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value);
+                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
+                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
                     }
+                console.log(result[0][i].denom)
             }
         }
 
         function fill_div(par1, par2, par3, id, value) {
-            var myD = document.getElementById(id);
-/*            console.log(value);
-            console.log(id);*/
+            var myD = document.getElementById(id+'_up');
             myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
 
-
-            create_new_div(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
+            create_new_table(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
 
         function printInfo(ele) {
@@ -220,9 +221,12 @@
         function clear_tabel() {
             for (var i = 1; i <= 5; i++) {
                 for (var j = 1; j <= 5; j++) {
-                    var myD = document.getElementById(String(j) + String(i));
-                    myD.innerHTML = '';
-                    create_new_div((String(j) + String(i)), myD, '<br><br><br><br>', func('','','','',days[j],i));
+                    var down = document.getElementById(String(j) + String(i)+'_down');
+                    var up = document.getElementById(String(j) + String(i)+'_up');
+                    down.innerHTML = '';
+                    up.innerHTML = '';
+                    //create_new_table((String(j) + String(i)), down, '', func('','','','',days[j],i));
+                    //create_new_table((String(j) + String(i)), up, '', func('','','','',days[j],i));
                 }
             }
         }
@@ -240,7 +244,7 @@
             return value;
         }
 
-        function create_new_div(id, parent, text, value) {
+        function create_new_table(id, parent, text, value) {
             var newD = document.createElement("div");
             newD.innerHTML = text;
             newD.id = (id + "div");
@@ -272,7 +276,7 @@
 
     .td {
         width: 150px;
-        height: 100px;
+        height: 50px;
         border: 1px solid #C0C0C0;
     }
 
@@ -317,9 +321,10 @@
         </tr>
         <td>
 
-            <select name="group_select" size="15">
+            <select name="group_select" size="15" >
                 {% for group in groups %}
-                <option style="width: 120px;" onclick="select_({{days_enum|safe}}, '{{group.group_name|safe}}', ' ')">
+                <option style="width: 120px;"
+                        onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
                     {{group.group_name}}
                 </option>
                 {% endfor %}
@@ -361,7 +366,8 @@
             <select name="teacher_select" size="15">
                 {% if teachers %}
                 {% for teacher in teachers %}
-                <option style="width: 120px;" onclick="select_({{days_enum|safe}},' ' , '{{teacher.teacher_name|safe}}')">
+                <option style="width: 120px;"
+                        onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">
                     {{teacher.teacher_name}}
                 </option>
                 {% endfor %}
