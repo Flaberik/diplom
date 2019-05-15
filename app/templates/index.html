@@ -22,9 +22,6 @@
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
 
         function create_select(select_for, value) {
-/*            console.log(value.teacher_name);
-            console.log(value.lesson_name);
-            console.log(value.group_name);*/
 
             if (select_for == 'teachers') {
                 select_teacher = '<select name="teacher_select" style="width: 250px;"><option></option>';
@@ -40,7 +37,7 @@
                 select_lesson = '<select name="lesson_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < lessons.length; i++) {
                     if (lessons[i].lesson_name == value.lesson_name) {
-                        select_lesson += '<option>' + lessons[i].lesson_name + '</option>';
+                        select_lesson += '<option selected>' + lessons[i].lesson_name + '</option>';
                     } else {
                         select_lesson += '<option>' + lessons[i].lesson_name + '</option>'
                     }
@@ -82,13 +79,9 @@
             return '';
         }
 
-        function func1(id) {
-            var myD = document.getElementById(id);
-            console.log(id);
+        function func1(myD) {
             var newForm = document.getElementById('newForm');
             var value = myD.value;
-
-            //if(value.teacher_name = '{% for teacher in teachers %}{{teacher_name}}{%endfor%}')
 
             newForm.innerHTML =
                 '   {{ form.hidden_tag() }}     \n' +
@@ -167,19 +160,13 @@
                 '                    </tr>\n' +
                 '                    <tr>\n' +
                 '                        <td>\n' +
-                '                            <input type="checkbox" name="che" value=""> Подмена\n' +
+                '                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
                 '                        </td>\n' +
                 '                    </tr>\n' +
                 '                </table>\n' +
                 '            </td>\n' +
                 '        </table>\n' +
                 '';
-            /*                '<form action="" method="POST" style="border: 1px solid #C0C0C0;">\n' +
-                            '     {{ form.hidden_tag() }} ' +
-                            '     <table>' +
-                            '     </table>' +
-                            '</form>\n';*/
-            //console.log(myD.id);
 
         }
 
@@ -203,10 +190,17 @@
         }
 
         function fill_div(par1, par2, par3, id, value) {
-            var myD = document.getElementById(id+'_up');
-            myD.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+            var td;
+            if (value.denom == 0)
+              var td = document.getElementById(id+'_up');
+            else if(value.denom == 1){
+              var td = document.getElementById(id+'_down');
+              td.style.borderTop = '1px solid #C0C0C0';
+            }
 
-            create_new_table(id, myD, (par1 + '<br>' + par2 + ' ' + par3), value)
+            td.innerHTML = '';//result[3][i].lesson_name + '<br>' + result[2][i].teacher_name + ' ' + result[0][i].num_room;
+
+            create_new_table(id, td, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
 
         function printInfo(ele) {
@@ -223,10 +217,9 @@
                 for (var j = 1; j <= 5; j++) {
                     var down = document.getElementById(String(j) + String(i)+'_down');
                     var up = document.getElementById(String(j) + String(i)+'_up');
-                    down.innerHTML = '';
-                    up.innerHTML = '';
-                    //create_new_table((String(j) + String(i)), down, '', func('','','','',days[j],i));
-                    //create_new_table((String(j) + String(i)), up, '', func('','','','',days[j],i));
+                    down.style.borderTop = '';
+                    create_new_table((String(j) + String(i)), down, '', func('','','','',days[j],i));
+                    create_new_table((String(j) + String(i)), up, '&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;', func('','','','',days[j],i));
                 }
             }
         }
@@ -245,15 +238,16 @@
         }
 
         function create_new_table(id, parent, text, value) {
-            var newD = document.createElement("div");
-            newD.innerHTML = text;
-            newD.id = (id + "div");
-            newD.value = value;
+            //var newD = document.createElement("div");
+            parent.innerHTML = text;
 
-            newD.onclick = function () {
-                func1(newD.id)
+            //newD.id = (id + "div");
+            parent.value = value;
+
+            parent.onclick = function () {
+                func1(parent)
             };
-            parent.appendChild(newD);
+            //parent.appendChild(newD);
         }
 
         //-->
@@ -302,7 +296,9 @@
 
 {% extends "base.html" %}
 {% block content %}
-
+{% if user.login %}
+  hello
+{% endif %}
 <center>
     <div  style="margin: 0 auto; padding-bottom: 5px;">
         <form action="" method="POST" id="newForm">
@@ -353,8 +349,15 @@
                     {%for row in range(5) %}
                     {% for col in range(5) %}
 
-                    <td class="td" id="{{(col+1)|string + (row+1)|string}}">
-
+                    <td class="td" >
+                        <table>
+                          <tr>
+                            <td id="{{(col+1)|string + (row+1)|string}}_up">&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</td>
+                          </tr>
+                          <tr>
+                            <td id="{{(col+1)|string + (row+1)|string}}_down"></td>
+                          </tr>
+                        </table>
                     </td>
                     {% endfor %}
                     <tr></tr>

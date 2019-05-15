@@ -39,15 +39,17 @@ def test(form):
         group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
         teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
         lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
-
-        hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']))
+        denom = 0;
+        if(request.form['denom'] == '1'):
+            denom = 1;
+        hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']) + str(denom))
         sch = Schedule.query.filter_by(hash_sum=hash).first()
         if sch is None:
             schedule = Schedule(group_id=group_id,
                                 teacher_id=teacher_id,
                                 lesson_id=lesson_id,
                                 num_room=request.form['num_room'], day_week=request.form['day_select'],
-                                pair=request.form['pair_select'], hash_sum=hash)
+                                pair=request.form['pair_select'], denom=denom, hash_sum=hash)
             db.session.add(schedule)
             db.session.commit()
         else:
