@@ -103,8 +103,12 @@
                 '        <td><select name="select_lesson_right" id="select_lesson_right" size="7" style="width: 160px;">\n' +
                 '        </select></td>\n' +
                 '    </tr>' +
-                '<tr><td colspan="3"><input type="button" value="Добавить"></td></tr>' +
+                '<tr><td colspan="3"><input type="button" value="Добавить" onclick="add_teacher()"></td></tr>' +
                 '</table>';
+        }
+
+        function add_teacher(){
+
         }
 
         function create_select_lesson() {
@@ -118,12 +122,17 @@
         function move_right() {
             select_left = document.getElementById('select_lesson_left');
             select_right = document.getElementById('select_lesson_right');
-            select_right.insertBefore("<option>hello</option>",select_right);
-            //console.log(select_right.value);
+            index = select_left.selectedIndex;
+            if(index > -1)
+              select_right.appendChild(select_left.options.item(index));
         }
 
         function move_left() {
-
+            select_left = document.getElementById('select_lesson_left');
+            select_right = document.getElementById('select_lesson_right');
+            index = select_right.selectedIndex;
+            if(index > -1)
+              select_left.appendChild(select_right.options.item(index));
         }
     </script>
     {% extends "base.html" %}
