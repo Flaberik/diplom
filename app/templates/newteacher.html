@@ -100,7 +100,7 @@
                 '        </td>\n' +
                 '        <td><br><input type="button" value=">>" onclick="move_right()">\n' +
                 '            <p></p><input type="button" value="<<" onclick="move_left()"></td>\n' +
-                '        <td><select name="select_lesson_right" size="7" style="width: 160px;">\n' +
+                '        <td><select name="select_lesson_right" id="select_lesson_right" size="7" style="width: 160px;">\n' +
                 '        </select></td>\n' +
                 '    </tr>' +
                 '<tr><td colspan="3"><input type="button" value="Добавить"></td></tr>' +
@@ -108,22 +108,22 @@
         }
 
         function create_select_lesson() {
-            select_lesson = '    <select name="select_lesson_left" size="7" style="width: 160px;">';
+            select_lesson = '    <select name="select_lesson_left" id="select_lesson_left" size="7" style="width: 160px;">';
             for (var i = 0; i < lessons.length; i++) {
                 select_lesson += '<option>'+lessons[i].lesson_name+'</option>';
             }
             return select_lesson + '</select>';
         }
-        
+
         function move_right() {
-            select = document.getElementsByName('select_lesson_left');
-            for (var i = 0; i < 0; i++) {
-                
-            }
+            select_left = document.getElementById('select_lesson_left');
+            select_right = document.getElementById('select_lesson_right');
+            select_right.insertBefore("<option>hello</option>",select_right);
+            //console.log(select_right.value);
         }
-        
+
         function move_left() {
-            
+
         }
     </script>
     {% extends "base.html" %}

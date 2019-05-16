@@ -24,17 +24,17 @@
         function create_select(select_for, value) {
 
             if (select_for == 'teachers') {
-                select_teacher = '<select name="teacher_select" style="width: 250px;"><option></option>';
+                select_teacher = '<select name="teacher_select" id="teacher_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < teachers.length; i++) {
                     if (teachers[i].teacher_name == value.teacher_name) {
-                        select_teacher += '<option selected>' + teachers[i].teacher_name + '</option>';
+                        select_teacher += '<option selected value="' + teachers[i].teacher_name + '">' + teachers[i].teacher_name + '</option>';
                     } else {
-                        select_teacher += '<option>' + teachers[i].teacher_name + '</option>'
+                        select_teacher += '<option value="' + teachers[i].teacher_name + '">' + teachers[i].teacher_name + '</option>'
                     }
                 }
                 return select_teacher + '</select>';
             } else if (select_for == 'lessons') {
-                select_lesson = '<select name="lesson_select" style="width: 250px;"><option></option>';
+                select_lesson = '<select name="lesson_select" id="lesson_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < lessons.length; i++) {
                     if (lessons[i].lesson_name == value.lesson_name) {
                         select_lesson += '<option selected>' + lessons[i].lesson_name + '</option>';
@@ -44,12 +44,12 @@
                 }
                 return select_lesson + '</select>';
             } else if (select_for == 'groups') {
-                select_group = '<select name="group_select" style="width: 250px;"><option></option>';
+                select_group = '<select name="group_select" id="group_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < groups.length; i++) {
                     if (groups[i].group_name == value.group_name) {
-                        select_group += '<option selected>' + groups[i].group_name + '</option>';
+                        select_group += '<option selected value="'+groups[i].group_name+'">' + groups[i].group_name + '</option>';
                     } else {
-                        select_group += '<option>' + groups[i].group_name + '</option>'
+                        select_group += '<option value="'+groups[i].group_name+'">' + groups[i].group_name + '</option>'
                     }
                 }
                 return select_group + '</select>';
@@ -79,9 +79,20 @@
             return '';
         }
 
+        function check_fields(){
+          var teacher_select = document.getElementById('teacher_select');
+          var lesson_select = document.getElementById('lesson_select');
+          var group_select = document.getElementById('group_select');
+          if(teacher_select.value.length > 0 && lesson_select.value.length > 0 && group_select.value.length > 0){
+             document.getElementById('newForm').submit();
+          }
+
+        }
+
         function func1(myD) {
             var newForm = document.getElementById('newForm');
             var value = myD.value;
+            chekbox = (value.denom == 1)? '<input type="checkbox" checked name="denom" value="1"> Подмена':'<input type="checkbox" name="denom" value="1"> Подмена';
 
             newForm.innerHTML =
                 '   {{ form.hidden_tag() }}     \n' +
@@ -121,7 +132,8 @@
                 '                    </tr>\n' +
                 '                    <tr>\n' +
                 '                        <td>\n' +
-                '                            <input name="submit" type="submit" value="Внести" style="width: 250px;">\n' +
+                '                             <button name="Submit" onclick="check_fields()" value="Внести" style="width: 120px;">Внести</button>' +
+                '                            <button name="Submit" onclick="check_fields()" value="Удалить" style="width: 120px;">Удалить</button>'+
                 '                        </td>\n' +
                 '                    </tr>\n' +
                 '                </table>\n' +
@@ -160,7 +172,8 @@
                 '                    </tr>\n' +
                 '                    <tr>\n' +
                 '                        <td>\n' +
-                '                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
+                chekbox+
+                //'                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
                 '                        </td>\n' +
                 '                    </tr>\n' +
                 '                </table>\n' +
@@ -185,7 +198,7 @@
                         value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
                         fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
                     }
-                console.log(result[0][i].denom)
+
             }
         }
 

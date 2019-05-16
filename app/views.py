@@ -40,23 +40,32 @@ def test(form):
         teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
         lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
         denom = 0;
-        if(request.form['denom'] == '1'):
-            denom = 1;
+        try:
+            if(request.form['denom'] == '1'):
+                denom = 1;
+        except:
+            pass
         hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']) + str(denom))
-        sch = Schedule.query.filter_by(hash_sum=hash).first()
-        if sch is None:
-            schedule = Schedule(group_id=group_id,
-                                teacher_id=teacher_id,
-                                lesson_id=lesson_id,
-                                num_room=request.form['num_room'], day_week=request.form['day_select'],
-                                pair=request.form['pair_select'], denom=denom, hash_sum=hash)
-            db.session.add(schedule)
-            db.session.commit()
-        else:
-            db.session.query(Schedule).filter_by(hash_sum=hash).update(
-                {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
+        if(request.form['Submit']=='Внести'):
+            sch = Schedule.query.filter_by(hash_sum=hash).first()
+
+            if sch is None:
+                schedule = Schedule(group_id=group_id,
+                                    teacher_id=teacher_id,
+                                    lesson_id=lesson_id,
+                                    num_room=request.form['num_room'], day_week=request.form['day_select'],
+                                    pair=request.form['pair_select'], denom=denom, hash_sum=hash)
+                db.session.add(schedule)
+                db.session.commit()
+            else:
+                db.session.query(Schedule).filter_by(hash_sum=hash).update(
+                    {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
+                db.session.commit()
+        elif(request.form['Submit']=='Удалить'):
+            db.session.query(Schedule).filter_by(hash_sum=hash).delete()
             db.session.commit()
 
+# ---------------------------------------------------------------------#
 
 # ---------------------------------------------------------------------#
 @app.route('/teacher', methods=['GET', 'POST'])
@@ -202,8 +211,9 @@ def signin():
 def index():
     user = g.user
     form = FlaskForm()
+    test(form)
     try:
-        test(form)
+        pass
     except:
         pass
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
