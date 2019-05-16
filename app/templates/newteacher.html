@@ -59,7 +59,6 @@
 
         /* границы ячеек тела таблицы */
         td {
-            padding: 2px;
             margin: 0 auto;
             border: 1px solid #C0C0C0;
         }
@@ -90,29 +89,121 @@
     </style>
     <script>
         var lessons = {{lessons|safe}};
+        var teachers = {{teachers|safe}};
+        var teacher_id = -1;
         function add_t() {
             data = document.getElementById('data_d');
             data.innerHTML = '<table>' +
                 '<tr><td colspan="3"><input type="text" name="add_teacher" value="" placeholder="ФИО Преподавателя" style="width: 270px;"></td></tr>' +
                 '    <tr>\n' +
                 '        <td>\n' +
-                create_select_lesson()+
+                create_select_lesson_left()+
                 '        </td>\n' +
                 '        <td><br><input type="button" value=">>" onclick="move_right()">\n' +
                 '            <p></p><input type="button" value="<<" onclick="move_left()"></td>\n' +
-                '        <td><select name="select_lesson_right" id="select_lesson_right" size="7" style="width: 160px;">\n' +
+                '        <td><select name="select_lesson_right" id="select_lesson_right" size="8" style="width: 200px;">\n' +
                 '        </select></td>\n' +
                 '    </tr>' +
-                '<tr><td colspan="3"><input type="button" value="Добавить" onclick="add_teacher()"></td></tr>' +
+                '<tr><td colspan="3"><button name="Submit" value="Добавить"  type="submit" onclick="add_teacher_f()">Добавить</button></td></tr>' +
                 '</table>';
         }
 
-        function add_teacher(){
+        function edit_t() {
+            data = document.getElementById('data_d');
+            data.innerHTML = '<table>' +
+                '<tr><td colspan="3">' + select_t() + '</td></tr>' +
+                '<tr><td colspan="3"><input type="text" name="new_teacher_name" id="new_teacher_name" value="" placeholder="Новое ФИО" style="width: 270px;"></td></tr>' +
+                '    <tr>\n' +
+                '        <td>\n' +
+                create_select_lesson_left() +
+                '        </td>\n' +
+                '        <td><br><input type="button" value=">>" onclick="move_right()">\n' +
+                '            <p></p><input type="button" value="<<" onclick="move_left()"></td>\n' +
+                '        <td id="select_right"><select name="select_lesson_right" id="select_lesson_right" size="8" style="width: 200px;">\n' +
+                '        </select></td>\n' +
+                '    </tr>' +
+                '<tr><td colspan="3"><button name="Submit" value="Редактировать"  type="submit" onclick="add_teacher_f()">Редактировать</button></td></tr>' +
+                '</table>'
+        }
+
+        function select_t() {
+            select_teacher = '<select name="select_teacher" id="select_teacher" style="width: 270px;" onchange="change_select_teacher()"><option></option>';
+            for (var i = 0; i < teachers.length; i++) {
+                select_teacher+='<option>'+teachers[i].teacher_name+'</option>'
+            }
+            return select_teacher + '</select>';
+        }
+
+        function update_select_teacher_right() {
+            if (teacher_id != -1) {
+                var td = document.getElementById('select_right');
+                var new_name = document.getElementById('new_teacher_name');
+                var select_teacher = document.getElementById('select_teacher');
+                new_name.value = select_teacher.value;
+                select_right = '<select name="select_lesson_right" id="select_lesson_right" size="8" style="width: 200px;">';
+
+                js = JSON.parse(teachers[teacher_id].available_lessons);
+                console.log(teachers[teacher_id].teacher_name);
+                for (var i = 0; i < js['count']; i++) {
+                    for (var j = 0; j < lessons.length; j++) {
+                        if(lessons[j].id == js[i]){
+                            console.log(lessons[j].lesson_name);
+                            select_right += '<option>'+lessons[j].lesson_name+'</option>';
+                            break;
+                        }
+                    }
+                }
+
+                select_right += '</select>';
+                td.innerHTML = select_right;
+            }
+        }
+
+        function change_select_teacher() {
+            var select_teacher = document.getElementById('select_teacher');
+            for (var i = 0; i < teachers.length; i++) {
+                if(select_teacher.value == teachers[i].teacher_name){
+                    teacher_id = i;
+                    break;
+                }
+            }
+            update_select_teacher_right();
+        }
+
+        function add_teacher_f(){
+            var myForm = document.getElementById('add_data');
+            var select_right = document.getElementById('select_lesson_right');
+            var myInput = document.createElement('input');
+            var js = '{';
+            myInput.style.background = 'rgba( 0,0,0,6)';
+            myInput.name = "data";
+            myInput.type = "hidden";
+            myInput.value='';
+
+            count = 0;
+            for (var i = 0; i < select_right.options.length; i++) {
+                for (var j = 0; j < lessons.length; j++) {
+                    if(lessons[j].lesson_name == select_right.options[i].value){
+                        js+='"'+count + '":' + lessons[j].id + ',';
+                        count++;
+                        break;
+                    }
+                }
+            }
+            js+='"count":'+count+'}';
+            myInput.value = js;
+            myForm.appendChild(myInput);
+            //submit();
 
         }
 
-        function create_select_lesson() {
-            select_lesson = '    <select name="select_lesson_left" id="select_lesson_left" size="7" style="width: 160px;">';
+        function submit() {
+            var myForm = document.getElementById('add_data');
+            myForm.submit();
+        }
+
+        function create_select_lesson_left() {
+            select_lesson = '<select name="select_lesson_left" id="select_lesson_left" size="8" style="width: 200px;">';
             for (var i = 0; i < lessons.length; i++) {
                 select_lesson += '<option>'+lessons[i].lesson_name+'</option>';
             }
@@ -143,7 +234,7 @@
 
 <center>
     <p></p>
-    <form action="" method="post" name="teacher">
+    <form action="" method="post" name="add_data" id="add_data">
         {{ form.hidden_tag() }}
         <div class="tabs">
 
@@ -163,93 +254,14 @@
             {% endif %}
 
             <div id="teachers">
-                <input type="button" value="Добавить" onclick="add_t()">
-                <input type="button" value="Редактировать">
-                <input type="button" value="Удалить">
+                <input type="button" value="Добавить" onclick="add_t()"><input type="button"
+                                                                               value="Редактировать" onclick="edit_t()"><input
+                    type="button" value="Удалить">
                 <br><br>
                 <div id="data_d">
 
                 </div>
-                <!--
-                <table class="tb">
-                    <tr class="tr">
-                        <th class="th">
-                            Добавление преподавателей
-                        </th>
-                        <th class="th">
-                            Редактирование преподавателей
-                        </th>
-                        <th class="th">
-                            Удаление преподавателей
-                        </th>
-                    </tr>
-                    <tr class="tr">
-                        <td class="td">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <input type="text" name="add_teacher" value="" placeholder="ФИО Преподавателя" style="width: 250px;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
 
-                        <td class="td">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <select name="edit_teacher_select" style="width: 250px;">
-                                            {% if teachers %}
-                                            {% for teacher in teachers %}
-                                            <option>{{teacher.teacher_name}}</option>
-                                            {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="text" name="new_teacher_name" value="" placeholder="Новое ФИО"
-                                               style="width: 250px;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-
-                        <td class="td">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <select name="del_teacher_select" style="width: 250px;">
-                                            {% if teachers %}
-                                            {% for teacher in teachers %}
-                                            <option>{{teacher.teacher_name}}</option>
-                                            {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-
-                    </tr>
-                </table>
-            -->
             </div>
             <div id="groups">
                 <table class="tb">
@@ -275,7 +287,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                        <button name="Submit" value="Добавить" style="width: 250px;" onclick="submit()">Добавить</button>
+
                                     </td>
                                 </tr>
                             </table>
@@ -303,7 +316,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                        <button name="Submit" value="Редактировать" style="width: 250px;" onclick="submit()">Редактировать</button>
                                     </td>
                                 </tr>
                             </table>
@@ -324,7 +337,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                        <button name="Submit"  value="Удалить" style="width: 250px;" onclick="submit()">Удалить</button>
                                     </td>
                                 </tr>
                             </table>
@@ -357,7 +370,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                        <button name="Submit" value="Добавить" style="width: 250px;" onclick="submit()">Добавить</button>
                                     </td>
                                 </tr>
                             </table>
@@ -385,7 +398,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                        <button name="Submit" value="Редактировать" style="width: 250px;" onclick="submit()">Редактировать</button>
                                     </td>
                                 </tr>
                             </table>
@@ -406,7 +419,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                        <button name="Submit" value="Удалить" style="width: 250px;">Удалить</button>
                                     </td>
                                 </tr>
                             </table>

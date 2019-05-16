@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='index_style.css')}}" type="text/css">
 
     <meta charset="utf-8">
     {% if title %}
@@ -19,6 +19,7 @@
         teachers = {{teachers|safe}};
         lessons = {{lessons|safe}};
         groups = {{groups|safe}};
+        login = '{{user.login|safe}}';
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
 
         function create_select(select_for, value) {
@@ -86,100 +87,101 @@
           if(teacher_select.value.length > 0 && lesson_select.value.length > 0 && group_select.value.length > 0){
              document.getElementById('newForm').submit();
           }
-
         }
 
         function func1(myD) {
-            var newForm = document.getElementById('newForm');
-            var value = myD.value;
-            chekbox = (value.denom == 1)? '<input type="checkbox" checked name="denom" value="1"> Подмена':'<input type="checkbox" name="denom" value="1"> Подмена';
+            if (login != '') {
+                var newForm = document.getElementById('newForm');
+                var value = myD.value;
+                chekbox = (value.denom == 1) ? '<input type="checkbox" checked name="denom" value="1"> Подмена' : '<input type="checkbox" name="denom" value="1"> Подмена';
 
-            newForm.innerHTML =
-                '   {{ form.hidden_tag() }}     \n' +
-                '        <table style="border: 1px solid #C0C0C0">\n' +
-                '            <td>\n' +
-                '                <table>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            Преподаватель:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                create_select('teachers',value) +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            Группа:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                create_select('groups',value)+
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            Дисциплина:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                create_select('lessons',value)+
-                '                        </td>\n' +
-                '\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                             <button name="Submit" onclick="check_fields()" value="Внести" style="width: 120px;">Внести</button>' +
-                '                            <button name="Submit" onclick="check_fields()" value="Удалить" style="width: 120px;">Удалить</button>'+
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                </table>\n' +
-                '            </td>\n' +
-                '            <td>\n' +
-                '                <table>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            День:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                create_select('days', value) +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            Пара:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                create_select('pair',value) +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            Номер аудитории:\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                '                            <input type="text" name="num_room" value="" placeholder="" style="width: 150px;">\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                    <tr>\n' +
-                '                        <td>\n' +
-                chekbox+
-                //'                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
-                '                        </td>\n' +
-                '                    </tr>\n' +
-                '                </table>\n' +
-                '            </td>\n' +
-                '        </table>\n' +
-                '';
+                newForm.innerHTML =
+                    '   {{ form.hidden_tag() }}     \n' +
+                    '        <table style="border: 1px solid #C0C0C0">\n' +
+                    '            <td>\n' +
+                    '                <table>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            Преподаватель:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    create_select('teachers', value) +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            Группа:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    create_select('groups', value) +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            Дисциплина:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    create_select('lessons', value) +
+                    '                        </td>\n' +
+                    '\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                             <button name="Submit" onclick="check_fields()" value="Внести" style="width: 120px;">Внести</button>' +
+                    '                            <button name="Submit" onclick="check_fields()" value="Удалить" style="width: 120px;">Удалить</button>' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                </table>\n' +
+                    '            </td>\n' +
+                    '            <td>\n' +
+                    '                <table>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            День:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    create_select('days', value) +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            Пара:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    create_select('pair', value) +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            Номер аудитории:\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    '                            <input type="text" name="num_room" value="" placeholder="" style="width: 150px;">\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                    <tr>\n' +
+                    '                        <td>\n' +
+                    chekbox +
+                    //'                            <input type="checkbox" name="denom" value="1"> Подмена\n' +
+                    '                        </td>\n' +
+                    '                    </tr>\n' +
+                    '                </table>\n' +
+                    '            </td>\n' +
+                    '        </table>\n' +
+                    '';
+            }
 
         }
 
@@ -200,6 +202,7 @@
                     }
 
             }
+            //printInfo(document.getElementById('t1'));
         }
 
         function fill_div(par1, par2, par3, id, value) {
@@ -217,7 +220,9 @@
         }
 
         function printInfo(ele) {
-            var openWindow = window.open("", "title", "attributes");
+            var openWindow = window.open('','','left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0');
+            var prtCss = "<link rel=\"stylesheet\" href=\"{{ url_for('static', filename='index_style.css')}}\" type=\"text/css\">";
+            openWindow.document.write(prtCss);
             openWindow.document.write(ele.innerHTML);
             openWindow.document.close();
             openWindow.focus();
@@ -265,53 +270,11 @@
 
         //-->
     </script>
+    {% extends "base.html" %}
 </head>
 <body>
 
-<style>
-    .tb {
-        border: 1px solid #C0C0C0;
-    }
-
-    .tr {
-        border: 1px solid #C0C0C0;
-    }
-
-    .th {
-        border: 1px solid #C0C0C0;
-    }
-
-    .td {
-        width: 150px;
-        height: 50px;
-        border: 1px solid #C0C0C0;
-    }
-
-    table {
-        margin: 0 auto;
-    }
-
-    th {
-        text-align: center;
-    }
-
-    td {
-        padding: 2px;
-
-    }
-
-    tr {
-        vertical-align: top;
-        align: center;
-        text-align: center;
-    }
-</style>
-
-{% extends "base.html" %}
 {% block content %}
-{% if user.login %}
-  hello
-{% endif %}
 <center>
     <div  style="margin: 0 auto; padding-bottom: 5px;">
         <form action="" method="POST" id="newForm">
@@ -321,7 +284,7 @@
 </center>
 <form action="" method="POST" name="test" style="border: 1px solid #C0C0C0;">
     {{ form.hidden_tag() }}
-    <table style="margin-bottom: 25px;">
+    <table style="margin-bottom: 25px;" id="testPrint">
         <tr>
         <tr>
             <td>

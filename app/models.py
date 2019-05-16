@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
 class Teachers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacher_name = db.Column(db.String(128), index=True, unique=True)
+    available_lessons = db.Column(db.String(512),index=True)
 
     def __repr__(self):
         return "'id': %r, 'teacher_name': %r" % (self.id, self.teacher_name)

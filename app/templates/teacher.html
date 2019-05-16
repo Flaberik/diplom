@@ -46,7 +46,86 @@
     }
 
 </style>
+                <!--
+                <table class="tb">
+                    <tr class="tr">
+                        <th class="th">
+                            Добавление преподавателей
+                        </th>
+                        <th class="th">
+                            Редактирование преподавателей
+                        </th>
+                        <th class="th">
+                            Удаление преподавателей
+                        </th>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="add_teacher" value="" placeholder="ФИО Преподавателя" style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Добавить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
 
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="edit_teacher_select" style="width: 250px;">
+                                            {% if teachers %}
+                                            {% for teacher in teachers %}
+                                            <option>{{teacher.teacher_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="new_teacher_name" value="" placeholder="Новое ФИО"
+                                               style="width: 250px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Редактировать" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td class="td">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <select name="del_teacher_select" style="width: 250px;">
+                                            {% if teachers %}
+                                            {% for teacher in teachers %}
+                                            <option>{{teacher.teacher_name}}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input name="submit" type="submit" value="Удалить" style="width: 250px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+                </table>
+            -->
 <center>
     <p>Преподаватели</p>
     <form action="" method="post" name="teacher">

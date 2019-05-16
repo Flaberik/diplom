@@ -1,20 +1,12 @@
 import hashlib
-import json
-import jsonpickle
 
 from flask import render_template, flash, redirect, session, url_for, request, g
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, login_required, logout_user
 
-from marshmallow import Schema, fields, pprint
-import sqlalchemy
-from sqlalchemy import *
-from sqlalchemy.ext.serializer import *
-
-from app import app, AlchemyEncoder
-from app import db, oid
+from app import app
+from app import oid
 from app.forms import *
 from app.models import *
-
 
 # ---------------------------------------------------------------------#
 @app.route('/login', methods=['GET', 'POST'])
@@ -23,13 +15,15 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(login=form.login.data).first()
+        user = User.query.filter_by(login=form.login.data, password=md5(form.password.data)).first()
 
         if user is None:
             flash('Invalid username or password')
             return redirect(url_for('login'))
+        session['username'] = form.login.data
         login_user(user, remember=form.remember_me.data)
-    return render_template('login.html', title='Sign In', form=form)
+        return redirect(url_for('index'))
+    return render_template('login.html',user=g.user, title='Sign In', form=form)
 
 
 # ---------------------------------------------------------------------#
@@ -41,12 +35,12 @@ def test(form):
         lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
         denom = 0;
         try:
-            if(request.form['denom'] == '1'):
+            if (request.form['denom'] == '1'):
                 denom = 1;
         except:
             pass
         hash = md5(str(group_id) + str(request.form['day_select']) + str(request.form['pair_select']) + str(denom))
-        if(request.form['Submit']=='Внести'):
+        if (request.form['Submit'] == 'Внести'):
             sch = Schedule.query.filter_by(hash_sum=hash).first()
 
             if sch is None:
@@ -61,9 +55,10 @@ def test(form):
                 db.session.query(Schedule).filter_by(hash_sum=hash).update(
                     {'teacher_id': teacher_id, 'lesson_id': lesson_id, 'num_room': request.form['num_room']})
                 db.session.commit()
-        elif(request.form['Submit']=='Удалить'):
+        elif (request.form['Submit'] == 'Удалить'):
             db.session.query(Schedule).filter_by(hash_sum=hash).delete()
             db.session.commit()
+
 
 # ---------------------------------------------------------------------#
 
@@ -73,14 +68,15 @@ def teacher():
     form = TeacherForm()
     inset = ''
     submit = ''
-    if form.validate_on_submit():
+    #flash(request.form)
+    if form.validate_on_submit() and 'username' in session:
         inset = request.form['inset']
-        submit = request.form['submit']
+        submit = request.form['Submit']
 
         if inset == 'teachers':
             if submit == 'Добавить':
                 try:
-                    teacher = Teachers(teacher_name=request.form['add_teacher'])
+                    teacher = Teachers(teacher_name=request.form['add_teacher'],available_lessons=request.form['data'])
                     db.session.add(teacher)
                     db.session.commit()
                 except:
@@ -89,13 +85,14 @@ def teacher():
             elif submit == 'Редактировать':
                 try:
                     t_name = request.form['new_teacher_name']
+                    flash(request.form['data'])
                     if len(t_name) > 1:
-                        db.session.query(Teachers).filter_by(teacher_name=request.form['edit_teacher_select']).update(
-                            {'teacher_name': t_name})
+                        flash(db.session.query(Teachers).filter_by(teacher_name=request.form['select_teacher']).first().id)
+                        db.session.query(Teachers).filter_by(teacher_name=request.form['select_teacher']).update(
+                            {'teacher_name': t_name, 'available_lessons': request.form['data']})
                         db.session.commit()
                 except:
                     db.session.rollback()
-                # return render_template('newteacher.html', title='Teachers', form=form, inset = str(inset), teachers = teachers)
             elif submit == 'Удалить':
                 try:
                     db.session.query(Schedule).filter_by(teacher_id=Teachers.query.filter_by(
@@ -161,7 +158,8 @@ def teacher():
                 except:
                     db.session.rollback()
 
-    return render_template('newteacher.html', title='Teachers', form=form, inset=inset, teachers=get_teachers(),
+    return render_template('newteacher.html', user=g.user, title='Teachers', form=form, inset=inset,
+                           teachers=get_teachers(),
                            groups=get_groups(), lessons=get_lessons())
 
 
@@ -186,42 +184,31 @@ def after_login(resp):
     login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or url_for('index'))
 
-
 # ---------------------------------------------------------------------#
 @app.before_request
 def before_request():
     g.user = current_user
 
+# ---------------------------------------------------------------------#
 
 # ---------------------------------------------------------------------#
-@app.route('/signup', methods=['GET', 'POST'])
-def signin():
-    form = SignUp()
-
-    if form.validate_on_submit():
-        if str(form.pass_one.data) == str(form.pass_two.data):
-            flash('registration complite')
-            return redirect('/index')
-    return render_template('signup.html', title='Sign Up', form=form)
+@login_required
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 
-# ---------------------------------------------------------------------#
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    user = g.user
     form = FlaskForm()
-    test(form)
-    try:
-        pass
-    except:
-        pass
+    if 'username' in session:
+        test(form)
     result = db.session.query(Schedule, Groups, Teachers, Lessons).filter(Schedule.group_id == Groups.id,
                                                                           Schedule.teacher_id == Teachers.id,
                                                                           Schedule.lesson_id == Lessons.id).all()
-    # teachers = Teachers.query.all()
-    # groups = Groups.query.all()
-    # lessons = Lessons.query.all()
     days_enum = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5}
 
     res = [[], [], [], []]
@@ -232,7 +219,7 @@ def index():
         res[2].append({'teacher_name': te.teacher_name})
         res[3].append({'lesson_name': le.lesson_name})
 
-    return render_template("index.html", title="Главная", user=user, form=form,
+    return render_template("index.html", title="Главная", user=g.user, form=form,
                            teachers=get_teachers(), groups=get_groups(), days_enum=days_enum, result=result, test=res,
                            lessons=get_lessons())
 
@@ -242,18 +229,19 @@ def load_page():
     result = []
     form = FlaskForm()
 
-    if (form.validate_on_submit()):
-        group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
-        teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
-        lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
-        load = Load(group_id=group_id, lesson_id=lesson_id, teacher_id=teacher_id, weeks=request.form['weeks'],
-                    academic_hours_week=request.form['academic_hours_week'],
-                    academic_hours_term=request.form['academic_hours_term'],
-                    courseworks=request.form['courseworks'], lab_works=request.form['lab_works'],
-                    ind_works=request.form['ind_works'], exams=request.form['exams'], advice=request.form['advice'],
-                    total_hours=request.form['total_hours'], term=request.form['term_select'])
-        db.session.add(load)
-        db.session.commit()
+    if 'username' in session:
+        if (form.validate_on_submit()):
+            group_id = Groups.query.filter_by(group_name=request.form['group_select']).first().id
+            teacher_id = Teachers.query.filter_by(teacher_name=request.form['teacher_select']).first().id
+            lesson_id = Lessons.query.filter_by(lesson_name=request.form['lesson_select']).first().id
+            load = Load(group_id=group_id, lesson_id=lesson_id, teacher_id=teacher_id, weeks=request.form['weeks'],
+                        academic_hours_week=request.form['academic_hours_week'],
+                        academic_hours_term=request.form['academic_hours_term'],
+                        courseworks=request.form['courseworks'], lab_works=request.form['lab_works'],
+                        ind_works=request.form['ind_works'], exams=request.form['exams'], advice=request.form['advice'],
+                        total_hours=request.form['total_hours'], term=request.form['term_select'])
+            db.session.add(load)
+            db.session.commit()
 
     for lo, gr, te, le in db.session.query(Load, Groups, Teachers, Lessons).filter(Load.group_id == Groups.id,
                                                                                    Load.teacher_id == Teachers.id,
@@ -265,7 +253,7 @@ def load_page():
              'lab_works': lo.lab_works, 'ind_works': lo.ind_works, 'exams': lo.exams, 'advice': lo.advice,
              'total_hours': lo.total_hours, 'term': lo.term})
 
-    return render_template("load.html", form=form, title='Нагрузка', result=result, teachers=get_teachers(),
+    return render_template("load.html", user=g.user, form=form, title='Нагрузка', result=result, teachers=get_teachers(),
                            lessons=get_lessons(),
                            groups=get_groups())
 
@@ -288,7 +276,7 @@ def get_lessons():
 def get_teachers():
     teachers = []
     for teacher in Teachers.query.all():
-        teachers.append({'id': teacher.id, 'teacher_name': teacher.teacher_name})
+        teachers.append({'id': teacher.id, 'teacher_name': teacher.teacher_name, 'available_lessons': teacher.available_lessons})
     return teachers
 
 

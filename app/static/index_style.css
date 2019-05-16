@@ -1,0 +1,39 @@
+.tb {
+    border: 1px solid #C0C0C0;
+}
+
+.tr {
+    border: 1px solid #C0C0C0;
+}
+
+.th {
+    border: 1px solid #C0C0C0;
+}
+
+.td {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #C0C0C0;
+    font-size: 15px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+table {
+    margin: 0 auto;
+
+}
+
+th {
+    text-align: center;
+}
+
+td {
+
+
+}
+
+tr {
+    vertical-align: top;
+    align: center;
+    text-align: center;
+}
