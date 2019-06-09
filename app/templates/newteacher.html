@@ -134,6 +134,14 @@
             return select_teacher + '</select>';
         }
 
+        function del_t() {
+            data = document.getElementById('data_d');
+            data.innerHTML = '<table>' +
+                '<tr><td colspan="3">' + select_t() + '</td></tr>' +
+                '<tr><td colspan="3"><button name="Submit" value="Удалить"  type="submit" >Удалить</button></td></tr>' +
+                '</table>'
+        }
+
         function update_select_teacher_right() {
             if (teacher_id != -1) {
                 var td = document.getElementById('select_right');
@@ -240,7 +248,7 @@
 
             <input type="radio" name="inset" value="teachers" id="tab_1">
             <label for="tab_1">Преподаватели</label>
-            <input type="radio" name="inset" value="groups" id="tab_2">
+            <input type="radio" name="inset" value="groups" id="tab_2" checked>
             <label for="tab_2">Группы</label>
             <input type="radio" name="inset" value="lessons" id="tab_3">
             <label for="tab_3">Дисциплины</label>
@@ -256,7 +264,7 @@
             <div id="teachers">
                 <input type="button" value="Добавить" onclick="add_t()"><input type="button"
                                                                                value="Редактировать" onclick="edit_t()"><input
-                    type="button" value="Удалить">
+                    type="button" value="Удалить" onclick="del_t()">
                 <br><br>
                 <div id="data_d">
 
@@ -431,25 +439,7 @@
     </form>
 </center>
 
-<table>
-    <tr>
-        <td>
-            <select name="form_select" size="7" style="width: 160px;">
-                <option value="select2">Первый вариант</option>
-                <option value="Значение 2">Второй вариант</option>
-                <option value="Значение 3">Третий вариант</option>
-                <option value="Значение 4">Четвертый вариант</option>
-                <option value="Значение 5">Пятый вариант</option>
-                <option value="Значение 6">Шестой вариант</option>
-            </select>
-        </td>
-        <td><br><input type="button" value=">>">
-            <p></p><input type="button" value="<<"></td>
-        <td><select name="form_select" size="7" style="width: 160px;">
 
-        </select></td>
-    </tr>
-</table>
 
 
 

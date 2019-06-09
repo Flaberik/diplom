@@ -63,16 +63,15 @@ def test(form):
 # ---------------------------------------------------------------------#
 
 # ---------------------------------------------------------------------#
-@app.route('/teacher', methods=['GET', 'POST'])
-def teacher():
+@app.route('/data', methods=['GET', 'POST'])
+def data():
     form = TeacherForm()
     inset = ''
     submit = ''
-    #flash(request.form)
+
     if form.validate_on_submit() and 'username' in session:
         inset = request.form['inset']
         submit = request.form['Submit']
-
         if inset == 'teachers':
             if submit == 'Добавить':
                 try:
@@ -85,9 +84,7 @@ def teacher():
             elif submit == 'Редактировать':
                 try:
                     t_name = request.form['new_teacher_name']
-                    flash(request.form['data'])
                     if len(t_name) > 1:
-                        flash(db.session.query(Teachers).filter_by(teacher_name=request.form['select_teacher']).first().id)
                         db.session.query(Teachers).filter_by(teacher_name=request.form['select_teacher']).update(
                             {'teacher_name': t_name, 'available_lessons': request.form['data']})
                         db.session.commit()
@@ -95,9 +92,10 @@ def teacher():
                     db.session.rollback()
             elif submit == 'Удалить':
                 try:
+                    t_name = request.form['select_teacher']
                     db.session.query(Schedule).filter_by(teacher_id=Teachers.query.filter_by(
-                        teacher_name=request.form['del_teacher_select']).first().id).delete()
-                    db.session.query(Teachers).filter_by(teacher_name=request.form['del_teacher_select']).delete()
+                        teacher_name=t_name).first().id).delete()
+                    db.session.query(Teachers).filter_by(teacher_name=t_name).delete()
                     db.session.commit()
                 except:
                     db.session.rollback()

@@ -25,7 +25,7 @@
         function create_select(select_for, value) {
 
             if (select_for == 'teachers') {
-                select_teacher = '<select name="teacher_select" id="teacher_select" style="width: 250px;"><option></option>';
+                select_teacher = '<select name="teacher_select" id="teacher_select" style="width: 250px;" onchange="change_select_t()"><option></option>';
                 for (var i = 0; i < teachers.length; i++) {
                     if (teachers[i].teacher_name == value.teacher_name) {
                         select_teacher += '<option selected value="' + teachers[i].teacher_name + '">' + teachers[i].teacher_name + '</option>';
@@ -80,6 +80,30 @@
             return '';
         }
 
+        function change_select_t() {
+            var teacher_select = document.getElementById('teacher_select');
+            var lesson_select = document.getElementById('lesson_select');
+
+            var js = '';
+            for (var i = 0; i < teachers.length; i++) {
+                if(teacher_select.value == teachers[i].teacher_name){
+                    js = JSON.parse(teachers[i].available_lessons);
+                    break;
+                }
+            }
+
+            lesson_select.innerHTML = '<option></option>';
+
+            for (var i = 0; i < js['count']; i++) {
+                for (var j = 0; j < lessons.length; j++) {
+                    if(js[i] == lessons[j].id){
+                        lesson_select.innerHTML += '<option>' + lessons[j].lesson_name + '</option>';
+                        break;
+                    }
+                }
+            }
+        }
+
         function check_fields(){
           var teacher_select = document.getElementById('teacher_select');
           var lesson_select = document.getElementById('lesson_select');
@@ -121,7 +145,7 @@
                     '                        </td>\n' +
                     '                    </tr>\n' +
                     '                    <tr>\n' +
-                    '                        <td>\n' +
+                    '                        <td id="td_lesson">\n' +
                     '                            Дисциплина:\n' +
                     '                        </td>\n' +
                     '                    </tr>\n' +
