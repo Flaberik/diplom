@@ -22,6 +22,26 @@
         login = '{{user.login|safe}}';
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
 
+        function check_size_table(group_name,teacher_name){
+            value = "";
+            param = "";
+            days = 5;
+            pair = 4;
+            if(group_name.length > 1){
+                value = group_name;
+                param = 'group_name';
+            }else if(teacher_name.length > 1){
+                value = teacher_name;
+                param = "teacher_name";
+            }
+
+            for (var i = 0; i < result[0].length; i++) {
+                console.log(result[1][i][param]);
+            }
+            console.log(value);
+            //console.log(teacher_name);
+        }
+
         function create_select(select_for, value) {
 
             if (select_for == 'teachers') {
@@ -210,7 +230,7 @@
         }
 
         function select(result, days_enum, group_name, teacher_name) {
-
+            check_size_table(group_name,teacher_name);
             clear_tabel();
             for (var i = 0; i < result[0].length; i++) {
                 if (group_name.length > 1)
@@ -309,23 +329,29 @@
 <form action="" method="POST" name="test" style="border: 1px solid #C0C0C0;">
     {{ form.hidden_tag() }}
     <table style="margin-bottom: 25px;" id="testPrint">
-        <tr>
-        <tr>
-            <td>
-                Группы:
-            </td>
-        </tr>
         <td>
+            <table>
+                <tr>
+                    <td>
+                        Группы:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
 
-            <select name="group_select" size="15" >
-                {% for group in groups %}
-                <option style="width: 120px;"
-                        onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
-                    {{group.group_name}}
-                </option>
-                {% endfor %}
-            </select>
+                        <select name="group_select" size="15">
+                            {% for group in groups %}
+                            <option style="width: 120px;"
+                                    onclick="select({{test|safe}},{{days_enum|safe}}, '{{group.group_name}}', '')">
+                                {{group.group_name}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
         </td>
+
         <td>
             <div id="t1">
                 <table>
@@ -365,17 +391,29 @@
                 </table>
             </div>
         </td>
+
         <td>
-            <select name="teacher_select" size="15">
-                {% if teachers %}
-                {% for teacher in teachers %}
-                <option style="width: 120px;"
-                        onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">
-                    {{teacher.teacher_name}}
-                </option>
-                {% endfor %}
-                {% endif %}
-            </select>
+            <table>
+                <tr>
+                    <td>
+                        Преподаватели:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="teacher_select" size="15">
+                            {% if teachers %}
+                            {% for teacher in teachers %}
+                            <option style="width: 120px;"
+                                    onclick="select({{test|safe}},{{days_enum|safe}},'' , '{{teacher.teacher_name}}')">
+                                {{teacher.teacher_name}}
+                            </option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
         </td>
         </tr>
     </table>
