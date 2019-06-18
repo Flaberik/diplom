@@ -212,7 +212,7 @@ def index():
     # res = [[], [], [], []]
     #
     # for sh, gr, te, le in result:
-    #     res[0].append({'day_week': sh.day_week, 'pair': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom})
+    #     res[0].append({'day_week': sh.day_week, 'pairs': sh.pairs, 'num_room': sh.num_room, 'denom': sh.denom})
     #     res[1].append({'group_name': gr.group_name})
     #     res[2].append({'teacher_name': te.teacher_name})
     #     res[3].append( {'lesson_name': le.lesson_name})
@@ -220,10 +220,7 @@ def index():
     res = []
 
     for sh, gr, te, le in result:
-        res.append({'day_week': sh.day_week, 'pair': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom})
-        res.append({'group_name': gr.group_name})
-        res.append({'teacher_name': te.teacher_name})
-        res.append({'lesson_name': le.lesson_name})
+        res.append({'day_week': sh.day_week, 'pairs': sh.pair, 'num_room': sh.num_room, 'denom': sh.denom,'group_name': gr.group_name,'teacher_name': te.teacher_name,'lesson_name': le.lesson_name})
 
 
     return render_template("index.html", title="Главная", user=g.user, form=form,

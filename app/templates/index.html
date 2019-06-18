@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='index_style.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='print.css')}}" type="text/css" media="print">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
     <meta charset="utf-8">
     {% if title %}
@@ -21,12 +23,15 @@
         groups = {{groups|safe}};
         login = '{{user.login|safe}}';
         days = {1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ', 6: 'СБ', 7: 'ВС'};
+        days_1 = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5, 'СБ': 6, 'ВС': 7};
+        days_ = 5;
+        pairs = 4;
 
         function check_size_table(group_name,teacher_name){
             value = "";
             param = "";
-            days = 5;
-            pair = 4;
+            days_ = 5;
+            pairs = 4;
             if(group_name.length > 1){
                 value = group_name;
                 param = 'group_name';
@@ -35,11 +40,63 @@
                 param = "teacher_name";
             }
 
-            for (var i = 0; i < result[0].length; i++) {
-                console.log(result[1][i][param]);
+            for (var i = 0; i < result.length; i++) {
+                if(result[i][param] == value){
+                    if(days_1[result[i]['day_week']] > days_)
+                        days_ = days_1[result[i]['day_week']];
+                    if(result[i]['pairs'] > pairs)
+                        pairs = result[i]['pairs'];
+                }
             }
-            console.log(value);
-            //console.log(teacher_name);
+            console.log('days: ' + days_ + ' pairs: ' + pairs);
+            table_shedule1 = document.getElementById('t1');
+
+            //console.log(create_schedule_table(days_,pairs));
+
+            table_shedule1.innerHTML = '<table id="schedule"></table>';
+            table_shedule1.innerHTML =  create_schedule_table(days_,pairs);
+
+
+        }
+
+        function create_schedule_table(days_, pair) {
+            table_shedule = '<table id="schedule"><tr>';
+            for (var i = 1; i <= days_; i++) {
+                table_shedule += '<td style="border: 1px solid #C0C0C0;">' + days[i] + '</td>';
+            }
+            table_shedule += '</tr><tr>';
+
+            for (var i = 1; i <= pairs; i++) {
+
+                for (var j = 1; j <= days_; j++) {
+                    table_shedule += '<td class="td"><table>';
+                    table_shedule += '  <tr><td id = "'+j.toString()+i.toString()+'_up">&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</td></tr>';
+                    table_shedule += '  <tr><td id = "'+j.toString()+i.toString()+'_down"></td></tr>';
+                    table_shedule += '</td></table>';
+                }
+                table_shedule += '<tr></tr>';
+
+            }
+            return table_shedule + '</tr> </table>';
+
+/*                  <tr>
+                    {%for row in range(4) %}
+                    {% for col in range(5) %}
+
+                    <td class="td" >
+                        <table>
+                          <tr>
+                            <td id="{{(col+1)|string + (row+1)|string}}_up">&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</td>
+                          </tr>
+                          <tr>
+                            <td id="{{(col+1)|string + (row+1)|string}}_down"></td>
+                          </tr>
+                        </table>
+                    </td>
+                    {% endfor %}
+                    <tr></tr>
+                    {% endfor %}
+                    </tr>*/
         }
 
         function create_select(select_for, value) {
@@ -84,10 +141,10 @@
                     }
                 }
                 return select_day + '</select>';
-            } else if (select_for == 'pair') {
+            } else if (select_for == 'pairs') {
                 select_pair = '<select name="pair_select" style="width: 150px;">';
                 for (var i = 1; i <= 6; i++) {
-                    if (String(i) == value.pair) {
+                    if (String(i) == value.pairs) {
                         select_pair += '<option selected>' + String(i) + '</option>';
                     } else {
                         select_pair += '<option>' + String(i) + '</option>';
@@ -202,7 +259,7 @@
                     '                    </tr>\n' +
                     '                    <tr>\n' +
                     '                        <td>\n' +
-                    create_select('pair', value) +
+                    create_select('pairs', value) +
                     '                        </td>\n' +
                     '                    </tr>\n' +
                     '                    <tr>\n' +
@@ -232,24 +289,30 @@
         function select(result, days_enum, group_name, teacher_name) {
             check_size_table(group_name,teacher_name);
             clear_tabel();
-            for (var i = 0; i < result[0].length; i++) {
+
+            for (var i = 0; i < result.length; i++) {
                 if (group_name.length > 1)
-                    if (result[1][i].group_name == group_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
-                        fill_div(result[3][i].lesson_name, result[2][i].teacher_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                    console.log(result[i].group_name);
+                    if (result[i].group_name == group_name) {
+                        value = func(result[i].group_name, result[i].teacher_name, result[i].lesson_name, result[i].num_room,result[i].day_week,result[i].pairs,result[i].denom);
+                        fill_div(result[i].lesson_name, result[i].teacher_name, result[i].num_room, (days_1[result[i].day_week] + result[i].pairs), value)
+
                     }
 
                 if (teacher_name.length > 1)
-                    if (result[2][i].teacher_name == teacher_name) {
-                        value = func(result[1][i].group_name, result[2][i].teacher_name, result[3][i].lesson_name, result[0][i].num_room,result[0][i].day_week,result[0][i].pair,result[0][i].denom);
-                        fill_div(result[3][i].lesson_name, result[1][i].group_name, result[0][i].num_room, (days_enum[result[0][i].day_week] + result[0][i].pair), value)
+                    if (result[i].teacher_name == teacher_name) {
+                        value = func(result[i].group_name, result[i].teacher_name, result[i].lesson_name, result[i].num_room,result[i].day_week,result[i].pairs,result[i].denom);
+                        fill_div(result[i].lesson_name, result[i].group_name, result[i].num_room, (days_1[result[i].day_week] + result[i].pairs), value)
                     }
 
             }
             //printInfo(document.getElementById('t1'));
+
+            //CallPrint('schedule');
         }
 
         function fill_div(par1, par2, par3, id, value) {
+            console.log(id);
             var td;
             if (value.denom == 0)
               var td = document.getElementById(id+'_up');
@@ -263,24 +326,43 @@
             create_new_table(id, td, (par1 + '<br>' + par2 + ' ' + par3), value)
         }
 
-        function printInfo(ele) {
+        function printInfo(strId) {
+            var ele = document.getElementById(strId);
             var openWindow = window.open('','','left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0');
-            var prtCss = "<link rel=\"stylesheet\" href=\"{{ url_for('static', filename='index_style.css')}}\" type=\"text/css\">";
+            var prtCss = '<link rel="stylesheet" href="{{ url_for("static", filename="index_style.css")}}" type="text/css" media="all">';
             openWindow.document.write(prtCss);
-            openWindow.document.write(ele.innerHTML);
+            openWindow.document.write(ele.outerHTML);
             openWindow.document.close();
             openWindow.focus();
             openWindow.print();
             openWindow.close();
         }
 
+        function CallPrint(strid) {
+            var divElements = document.getElementById(strid).innerHTML;
+            var openWindow = window.open('','','left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0');
+            //Get the HTML of whole page
+            var oldPage = document.body.innerHTML;
+            //Reset the page's HTML with div's HTML only
+            document.body.innerHTML =
+                "<html><head><title></title></head><body>" +
+                divElements + "</body>";
+            //Print Page
+
+            //window.print();
+            //Restore orignal HTML
+            document.body.innerHTML = oldPage;
+
+        }
+
         function clear_tabel() {
-            for (var i = 1; i <= 5; i++) {
-                for (var j = 1; j <= 5; j++) {
+            for (var i = 1; i <= pairs; i++) {
+                for (var j = 1; j <= days_; j++) {
+
                     var down = document.getElementById(String(j) + String(i)+'_down');
                     var up = document.getElementById(String(j) + String(i)+'_up');
-                    down.style.borderTop = '';
-                    create_new_table((String(j) + String(i)), down, '', func('','','','',days[j],i));
+                    //down.style.borderTop = '';
+                    create_new_table((String(j) + String(i)), down, '.', func('','','','',days[j],i));
                     create_new_table((String(j) + String(i)), up, '&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;', func('','','','',days[j],i));
                 }
             }
@@ -293,7 +375,7 @@
                 'lesson_name': lesson,
                 'num_room': num_room,
                 'day_week': day_week,
-                'pair': pair,
+                'pair': pairs,
                 'denom': denom
             };
             return value;
@@ -301,7 +383,9 @@
 
         function create_new_table(id, parent, text, value) {
             //var newD = document.createElement("div");
-            parent.innerHTML = text;
+            //console.log(parent);
+            if (text.length > 1)
+                parent.innerHTML = text;
 
             //newD.id = (id + "div");
             parent.value = value;
@@ -313,6 +397,20 @@
         }
 
         //-->
+    </script>
+
+    <script type="text/javascript">
+        function PrintElem(elem) {
+            Popup($(elem).html());
+        }
+
+        function Popup(data) {
+            var divToPrint = document.getElementById("t1");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
     </script>
     {% extends "base.html" %}
 </head>
@@ -330,7 +428,7 @@
     {{ form.hidden_tag() }}
     <table style="margin-bottom: 25px;" id="testPrint">
         <td>
-            <table>
+            <table class="select">
                 <tr>
                     <td>
                         Группы:
@@ -353,8 +451,8 @@
         </td>
 
         <td>
-            <div id="t1">
-                <table>
+            <div id="t1" class="t1">
+                <table id="schedule">
                     <tr>
                         <td style="border: 1px solid #C0C0C0;">
                             ПН
@@ -372,7 +470,8 @@
                             ПТ
                         </td>
                     </tr>
-                    {%for row in range(5) %}
+                    <tr>
+                    {%for row in range(4) %}
                     {% for col in range(5) %}
 
                     <td class="td" >
@@ -388,12 +487,13 @@
                     {% endfor %}
                     <tr></tr>
                     {% endfor %}
+                    </tr>
                 </table>
             </div>
         </td>
 
         <td>
-            <table>
+            <table class="select">
                 <tr>
                     <td>
                         Преподаватели:
@@ -416,6 +516,8 @@
             </table>
         </td>
         </tr>
+
+        <tr><td><input type="button" value="Печать" onclick="printInfo('t1')"></td></tr>
     </table>
 </form>
 {% endblock %}

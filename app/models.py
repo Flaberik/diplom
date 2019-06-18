@@ -66,7 +66,7 @@ class Schedule(db.Model):
         return ['id', 'group_id', 'lesson_id', 'teacher_id']
     def __repr__(self):
         return '<Schedule %r>' % (self.id)
-        #return "'id': %a, 'group_id': %a, 'lesson_id': %a, 'teacher_id': %a, 'day_week': %a, 'pair': %a, 'num_room': %a, 'denom': %a" % (self.id, self.group_id, self.lesson_id, self.teacher_id, self.day_week, self.pair, self.num_room, self.denom)
+        #return "'id': %a, 'group_id': %a, 'lesson_id': %a, 'teacher_id': %a, 'day_week': %a, 'pairs': %a, 'num_room': %a, 'denom': %a" % (self.id, self.group_id, self.lesson_id, self.teacher_id, self.day_week, self.pairs, self.num_room, self.denom)
 
 class Load(db.Model):
     id = db.Column(db.Integer, primary_key=True)
