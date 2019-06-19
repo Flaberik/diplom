@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='index_style.css')}}" type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='print.css')}}" type="text/css" media="print">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
     <meta charset="utf-8">
@@ -26,12 +26,14 @@
         days_1 = {'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5, 'СБ': 6, 'ВС': 7};
         days_ = 5;
         pairs = 4;
+        value_select = '';
 
         function check_size_table(group_name,teacher_name){
             value = "";
             param = "";
             days_ = 5;
             pairs = 4;
+
             if(group_name.length > 1){
                 value = group_name;
                 param = 'group_name';
@@ -39,7 +41,7 @@
                 value = teacher_name;
                 param = "teacher_name";
             }
-
+            value_select = value;
             for (var i = 0; i < result.length; i++) {
                 if(result[i][param] == value){
                     if(days_1[result[i]['day_week']] > days_)
@@ -48,7 +50,7 @@
                         pairs = result[i]['pairs'];
                 }
             }
-            console.log('days: ' + days_ + ' pairs: ' + pairs);
+
             table_shedule1 = document.getElementById('t1');
 
             //console.log(create_schedule_table(days_,pairs));
@@ -78,25 +80,6 @@
 
             }
             return table_shedule + '</tr> </table>';
-
-/*                  <tr>
-                    {%for row in range(4) %}
-                    {% for col in range(5) %}
-
-                    <td class="td" >
-                        <table>
-                          <tr>
-                            <td id="{{(col+1)|string + (row+1)|string}}_up">&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</td>
-                          </tr>
-                          <tr>
-                            <td id="{{(col+1)|string + (row+1)|string}}_down"></td>
-                          </tr>
-                        </table>
-                    </td>
-                    {% endfor %}
-                    <tr></tr>
-                    {% endfor %}
-                    </tr>*/
         }
 
         function create_select(select_for, value) {
@@ -104,7 +87,7 @@
             if (select_for == 'teachers') {
                 select_teacher = '<select name="teacher_select" id="teacher_select" style="width: 250px;" onchange="change_select_t()"><option></option>';
                 for (var i = 0; i < teachers.length; i++) {
-                    if (teachers[i].teacher_name == value.teacher_name) {
+                    if (teachers[i].teacher_name == value.teacher_name || teachers[i].teacher_name == value_select) {
                         select_teacher += '<option selected value="' + teachers[i].teacher_name + '">' + teachers[i].teacher_name + '</option>';
                     } else {
                         select_teacher += '<option value="' + teachers[i].teacher_name + '">' + teachers[i].teacher_name + '</option>'
@@ -122,9 +105,10 @@
                 }
                 return select_lesson + '</select>';
             } else if (select_for == 'groups') {
+                //console.log(groups);
                 select_group = '<select name="group_select" id="group_select" style="width: 250px;"><option></option>';
                 for (var i = 0; i < groups.length; i++) {
-                    if (groups[i].group_name == value.group_name) {
+                    if (groups[i].group_name == value.group_name || groups[i].group_name == value_select) {
                         select_group += '<option selected value="'+groups[i].group_name+'">' + groups[i].group_name + '</option>';
                     } else {
                         select_group += '<option value="'+groups[i].group_name+'">' + groups[i].group_name + '</option>'
@@ -142,9 +126,10 @@
                 }
                 return select_day + '</select>';
             } else if (select_for == 'pairs') {
-                select_pair = '<select name="pair_select" style="width: 150px;">';
+                select_pair = '<select name="pair_select" style="width: 150px;">'
+
                 for (var i = 1; i <= 6; i++) {
-                    if (String(i) == value.pairs) {
+                    if (i == value.pair) {
                         select_pair += '<option selected>' + String(i) + '</option>';
                     } else {
                         select_pair += '<option>' + String(i) + '</option>';
@@ -194,6 +179,7 @@
             if (login != '') {
                 var newForm = document.getElementById('newForm');
                 var value = myD.value;
+                console.log(value);
                 chekbox = (value.denom == 1) ? '<input type="checkbox" checked name="denom" value="1"> Подмена' : '<input type="checkbox" name="denom" value="1"> Подмена';
 
                 newForm.innerHTML =
@@ -292,7 +278,7 @@
 
             for (var i = 0; i < result.length; i++) {
                 if (group_name.length > 1)
-                    console.log(result[i].group_name);
+
                     if (result[i].group_name == group_name) {
                         value = func(result[i].group_name, result[i].teacher_name, result[i].lesson_name, result[i].num_room,result[i].day_week,result[i].pairs,result[i].denom);
                         fill_div(result[i].lesson_name, result[i].teacher_name, result[i].num_room, (days_1[result[i].day_week] + result[i].pairs), value)
@@ -306,13 +292,10 @@
                     }
 
             }
-            //printInfo(document.getElementById('t1'));
-
-            //CallPrint('schedule');
         }
 
         function fill_div(par1, par2, par3, id, value) {
-            console.log(id);
+
             var td;
             if (value.denom == 0)
               var td = document.getElementById(id+'_up');
@@ -329,7 +312,9 @@
         function printInfo(strId) {
             var ele = document.getElementById(strId);
             var openWindow = window.open('','','left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0');
-            var prtCss = '<link rel="stylesheet" href="{{ url_for("static", filename="index_style.css")}}" type="text/css" media="all">';
+            //var prtCss = '<link rel="stylesheet" href="{{ url_for("static", filename="index_style.css")}}" type="text/css" media="all">';
+            var prtCss = '<link rel="stylesheet" href="/static/index_style.css" type="text/css" media="print">';
+
             openWindow.document.write(prtCss);
             openWindow.document.write(ele.outerHTML);
             openWindow.document.close();
@@ -362,6 +347,7 @@
                     var down = document.getElementById(String(j) + String(i)+'_down');
                     var up = document.getElementById(String(j) + String(i)+'_up');
                     //down.style.borderTop = '';
+
                     create_new_table((String(j) + String(i)), down, '.', func('','','','',days[j],i));
                     create_new_table((String(j) + String(i)), up, '&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;', func('','','','',days[j],i));
                 }
@@ -375,7 +361,7 @@
                 'lesson_name': lesson,
                 'num_room': num_room,
                 'day_week': day_week,
-                'pair': pairs,
+                'pair': pair,
                 'denom': denom
             };
             return value;
@@ -383,7 +369,7 @@
 
         function create_new_table(id, parent, text, value) {
             //var newD = document.createElement("div");
-            //console.log(parent);
+            //console.log(value);
             if (text.length > 1)
                 parent.innerHTML = text;
 
@@ -391,7 +377,7 @@
             parent.value = value;
 
             parent.onclick = function () {
-                func1(parent)
+                func1(parent);
             };
             //parent.appendChild(newD);
         }
@@ -516,8 +502,6 @@
             </table>
         </td>
         </tr>
-
-        <tr><td><input type="button" value="Печать" onclick="printInfo('t1')"></td></tr>
     </table>
 </form>
 {% endblock %}
