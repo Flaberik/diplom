@@ -7,7 +7,7 @@ Flask-OpenID==1.2.5
 Flask-SQLAlchemy==2.3.2
 Flask-WTF==0.14.2
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 jsonpickle==1.1
 MarkupSafe==1.1.1
 marshmallow==2.19.2
